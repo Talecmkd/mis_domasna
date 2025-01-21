@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import '../screens/product_detail_page.dart';
 
 class FeaturedProductsCarousel extends StatefulWidget {
   final List<Product> featuredProducts;
@@ -78,8 +79,12 @@ class _FeaturedProductsCarouselState extends State<FeaturedProductsCarousel> {
       },
       child: GestureDetector(
         onTap: () {
-          // TODO: Navigate to product details page
-          print('Tapped on ${product.name}');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductDetailPage(product: product),
+            ),
+          );
         },
         child: Card(
           elevation: 4,

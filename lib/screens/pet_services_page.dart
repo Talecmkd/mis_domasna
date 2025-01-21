@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mis_domasna/screens/service_detail_page.dart';
 import '../models/pet_service.dart';
 import '../widgets/app_drawer.dart';
 
@@ -29,8 +30,12 @@ class PetServicesPage extends StatelessWidget {
         trailing: Text('\$${service.price.toStringAsFixed(2)}',
             style: Theme.of(context).textTheme.titleMedium),
         onTap: () {
-          // TODO: Implement service booking or details page navigation
-          print('Tapped on service: ${service.name}');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ServiceDetailPage(service: service),
+            ),
+          );
         },
       ),
     );

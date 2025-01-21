@@ -1,11 +1,21 @@
-// lib/screens/wishlist_page.dart
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../widgets/app_drawer.dart';
+import 'product_detail_page.dart';
 
-class WishlistPage extends StatelessWidget {
-  // For this example, we'll use a subset of sampleProducts as wishlist items
-  final List<Product> wishlistItems = sampleProducts.take(3).toList();
+class WishlistPage extends StatefulWidget {
+  @override
+  _WishlistPageState createState() => _WishlistPageState();
+}
+
+class _WishlistPageState extends State<WishlistPage> {
+  List<Product> wishlistItems = sampleProducts.take(3).toList();
+
+  void _deleteItem(Product product) {
+    setState(() {
+      wishlistItems.removeWhere((item) => item.id == product.id);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,13 +48,19 @@ class WishlistPage extends StatelessWidget {
         trailing: IconButton(
           icon: Icon(Icons.delete),
           onPressed: () {
-            // TODO: Implement remove from wishlist functionality
-            print('Remove ${product.name} from wishlist');
+            _deleteItem(product);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('${product.name} removed from wishlist')),
+            );
           },
         ),
         onTap: () {
-          // TODO: Navigate to product details page
-          print('View details of ${product.name}');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProductDetailPage(product: product),
+            ),
+          );
         },
       ),
     );

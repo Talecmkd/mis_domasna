@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
+import '../screens/product_detail_page.dart';
 
 class PopularProductsGrid extends StatelessWidget {
   final List<Product> products;
@@ -41,7 +42,16 @@ class PopularProductsGrid extends StatelessWidget {
   }
 
   Widget _buildProductCard(BuildContext context, Product product) {
-    return Card(
+    return GestureDetector(
+        onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProductDetailPage(product: product),
+        ),
+      );
+    },
+    child: Card(
       elevation: 2,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -83,6 +93,7 @@ class PopularProductsGrid extends StatelessWidget {
           ),
         ],
       ),
+    )
     );
   }
 }

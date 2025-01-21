@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mis_domasna/screens/category_products_page.dart';
 import '../models/product.dart';
 import '../widgets/app_drawer.dart';
 
@@ -27,8 +28,16 @@ class CategoryPage extends StatelessWidget {
       margin: EdgeInsets.all(8.0),
       child: InkWell(
         onTap: () {
-          // TODO: Navigate to category products page
-          print('Tapped on category: $category');
+          List<Product> categoryProducts = sampleProducts.where((p) => p.category == category).toList();
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CategoryProductsPage(
+                category: category,
+                products: categoryProducts,
+              ),
+            ),
+          );
         },
         child: Padding(
           padding: EdgeInsets.all(16.0),
