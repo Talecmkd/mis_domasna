@@ -6,11 +6,29 @@ import '../widgets/category_section.dart';
 import '../widgets/featured_products_carousel.dart';
 import '../widgets/pet_services_section.dart';
 import '../widgets/popular_products_grid.dart';
+import 'cart_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String? selectedCategory;
+
+  void selectCategory(String? category) {
+    setState(() {
+      selectedCategory = category;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Product> featuredProducts = sampleProducts.where((product) => product.isFeatured).toList();
+    List<Product> filteredProducts = selectedCategory == null
+        ? sampleProducts
+        : sampleProducts.where((product) => product.category == selectedCategory).toList();
+
+    List<Product> featuredProducts = filteredProducts.where((product) => product.isFeatured).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -19,7 +37,9 @@ class HomePage extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.shopping_cart),
             onPressed: () {
-              // TODO: Implement cart functionality
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => CartPage()),
+              );
             },
           ),
         ],
@@ -29,19 +49,24 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-        Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Text(
-          'Featured Products',
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-        ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Featured Products',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+            ),
             FeaturedProductsCarousel(featuredProducts: featuredProducts),
             SizedBox(height: 16),
-            CategorySection(products: sampleProducts),
+            CategorySection(
+              products: sampleProducts,
+              onSelectCategory: selectCategory,
+              selectedCategory: selectedCategory,
+            ),
             SizedBox(height: 16),
-            PopularProductsGrid(products: sampleProducts),
-            PetServicesSection(services: sampleServices),          ],
+            PopularProductsGrid(products: filteredProducts),
+            PetServicesSection(services: sampleServices),
+          ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(

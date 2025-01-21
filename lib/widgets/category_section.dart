@@ -3,15 +3,19 @@ import '../models/product.dart';
 
 class CategorySection extends StatelessWidget {
   final List<Product> products;
+  final Function(String?) onSelectCategory;
+  final String? selectedCategory;
 
-  CategorySection({required this.products});
-
-  List<String> get categories {
-    return products.map((product) => product.category).toSet().toList();
-  }
+  CategorySection({
+    required this.products,
+    required this.onSelectCategory,
+    this.selectedCategory,
+  });
 
   @override
   Widget build(BuildContext context) {
+    List<String> categories = products.map((p) => p.category).toSet().toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -28,16 +32,15 @@ class CategorySection extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             itemCount: categories.length,
             itemBuilder: (context, index) {
+              String category =
+              index == 0 ? 'All' : categories[index - 1];
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: ChoiceChip(
-                  label: Text(categories[index]),
-                  selected: false,
+                  label: Text(category),
+                  selected: selectedCategory == (index == 0 ? null : category),
                   onSelected: (selected) {
-                    if (selected) {
-                      // TODO: Implement category selection logic
-                      print('Selected category: ${categories[index]}');
-                    }
+                    onSelectCategory(selected ? (index == 0 ? null : category) : null);
                   },
                 ),
               );
