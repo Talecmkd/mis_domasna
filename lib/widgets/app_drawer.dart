@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: Color(0xFFF7FCF7),
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           _buildDrawerHeader(),
+          SizedBox(height: 16),
           _buildDrawerItem(
             icon: Icons.person,
             text: 'My Profile',
@@ -38,9 +41,12 @@ class AppDrawer extends StatelessWidget {
             text: 'Wishlist',
             onTap: () => Navigator.pushNamed(context, '/wishlist'),
           ),
-          Divider(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(color: Color(0xFFE8F2E8), thickness: 1),
+          ),
           _buildDrawerItem(
-            icon: Icons.help,
+            icon: Icons.help_outline,
             text: 'Help & Support',
             onTap: () => Navigator.pushNamed(context, '/support'),
           ),
@@ -49,7 +55,10 @@ class AppDrawer extends StatelessWidget {
             text: 'Settings',
             onTap: () => Navigator.pushNamed(context, '/settings'),
           ),
-          Divider(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(color: Color(0xFFE8F2E8), thickness: 1),
+          ),
           _buildDrawerItem(
             icon: Icons.exit_to_app,
             text: 'Sign Out',
@@ -57,6 +66,7 @@ class AppDrawer extends StatelessWidget {
               // TODO: Implement sign out logic
               print('Sign out tapped');
             },
+            isSignOut: true,
           ),
         ],
       ),
@@ -64,19 +74,44 @@ class AppDrawer extends StatelessWidget {
   }
 
   Widget _buildDrawerHeader() {
-    return UserAccountsDrawerHeader(
-      accountName: Text("Mihail Talev"),
-      accountEmail: Text("mihail.talev@hotmail.com"),
-      currentAccountPicture: CircleAvatar(
-        backgroundColor: Colors.white,
-        child: Icon(
-          Icons.person,
-          size: 50,
-          color: Colors.blue,
-        ),
-      ),
+    return Container(
+      padding: EdgeInsets.fromLTRB(16, 60, 16, 16),
       decoration: BoxDecoration(
-        color: Colors.blue,
+        color: Color(0xFFE8F2E8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CircleAvatar(
+            radius: 32,
+            backgroundColor: Color(0xFF4F964F),
+            child: Text(
+              'MT',
+              style: GoogleFonts.inter(
+                color: Colors.white,
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          SizedBox(height: 12),
+          Text(
+            "Mihail Talev",
+            style: GoogleFonts.inter(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF0D1C0D),
+            ),
+          ),
+          SizedBox(height: 4),
+          Text(
+            "mihail.talev@hotmail.com",
+            style: GoogleFonts.inter(
+              fontSize: 14,
+              color: Color(0xFF4F964F),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -85,11 +120,24 @@ class AppDrawer extends StatelessWidget {
     required IconData icon,
     required String text,
     required GestureTapCallback onTap,
+    bool isSignOut = false,
   }) {
     return ListTile(
-      leading: Icon(icon),
-      title: Text(text),
+      leading: Icon(
+        icon,
+        color: isSignOut ? Color(0xFF4F964F) : Color(0xFF0D1C0D),
+        size: 24,
+      ),
+      title: Text(
+        text,
+        style: GoogleFonts.inter(
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+          color: isSignOut ? Color(0xFF4F964F) : Color(0xFF0D1C0D),
+        ),
+      ),
       onTap: onTap,
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );
   }
 }

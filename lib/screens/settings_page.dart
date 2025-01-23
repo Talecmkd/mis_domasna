@@ -1,5 +1,5 @@
-// lib/screens/settings_page.dart
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../widgets/app_drawer.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -15,57 +15,163 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF7FCF7),
       appBar: AppBar(
-        title: Text('Settings'),
+        backgroundColor: Color(0xFFF7FCF7),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0xFF0D1C0D)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Settings',
+          style: GoogleFonts.inter(
+            fontSize: 16.9,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF5F685F),
+          ),
+        ),
+        centerTitle: true,
       ),
-      drawer: AppDrawer(),
-      body: ListView(
+      body: Column(
         children: [
-          SwitchListTile(
-            title: Text('Enable Notifications'),
-            value: _notificationsEnabled,
-            onChanged: (bool value) {
-              setState(() {
-                _notificationsEnabled = value;
-              });
-            },
+          Expanded(
+            child: ListView(
+              children: [
+                _buildSectionTitle('Account'),
+                _buildListItem('Profile', trailing: Icons.arrow_forward_ios),
+                _buildListItem('Payment', trailing: Icons.arrow_forward_ios),
+
+                _buildSectionTitle('Preferences'),
+                _buildSwitchItem(
+                  'Dark Mode',
+                  _darkModeEnabled,
+                      (value) => setState(() => _darkModeEnabled = value),
+                ),
+                _buildListItem('Language',
+                  subtitle: 'English',
+                  onTap: _showLanguageDialog,
+                ),
+                _buildSwitchItem(
+                  'Push Notifications',
+                  _notificationsEnabled,
+                      (value) => setState(() => _notificationsEnabled = value),
+                ),
+
+                _buildSectionTitle('About'),
+                _buildListItem('Privacy Policy'),
+                _buildListItem('Terms of Service'),
+                _buildListItem('Version', subtitle: '1.0.0'),
+              ],
+            ),
           ),
-          ListTile(
-            title: Text('Language'),
-            subtitle: Text(_selectedLanguage),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: _showLanguageDialog,
-          ),
-          SwitchListTile(
-            title: Text('Dark Mode'),
-            value: _darkModeEnabled,
-            onChanged: (bool value) {
-              setState(() {
-                _darkModeEnabled = value;
-              });
-              // TODO: Implement dark mode functionality
-            },
-          ),
-          ListTile(
-            title: Text('Privacy Policy'),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              // TODO: Navigate to Privacy Policy page
-            },
-          ),
-          ListTile(
-            title: Text('Terms of Service'),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              // TODO: Navigate to Terms of Service page
-            },
-          ),
-          ListTile(
-            title: Text('App Version'),
-            subtitle: Text('1.0.0'),
-          ),
+          _buildBottomNavBar(),
         ],
       ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(16, 20, 16, 8),
+      child: Text(
+        title,
+        style: GoogleFonts.inter(
+          fontSize: 16.9,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF606860),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildListItem(String title, {
+    String? subtitle,
+    IconData? trailing,
+    VoidCallback? onTap,
+  }) {
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      title: Text(
+        title,
+        style: GoogleFonts.inter(
+          fontSize: 14.8,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF7B827B),
+        ),
+      ),
+      subtitle: subtitle != null ? Text(
+        subtitle,
+        style: GoogleFonts.inter(
+          fontSize: 14.2,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF828881),
+        ),
+      ) : null,
+      trailing: trailing != null ? Icon(
+        trailing,
+        color: Color(0xFF0D1C0D),
+        size: 18,
+      ) : null,
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildSwitchItem(String title, bool value, Function(bool) onChanged) {
+    return SwitchListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      title: Text(
+        title,
+        style: GoogleFonts.inter(
+          fontSize: 14.8,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF767D76),
+        ),
+      ),
+      value: value,
+      onChanged: onChanged,
+      activeColor: Color(0xFF4F964F),
+    );
+  }
+
+  Widget _buildBottomNavBar() {
+    return Container(
+      height: 75,
+      decoration: BoxDecoration(
+        color: Color(0xFFF7FCF7),
+        border: Border(top: BorderSide(color: Color(0xFFE8F2E8))),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildNavItem(Icons.home, 'Home', false),
+          _buildNavItem(Icons.search, 'Categories', false),
+          _buildNavItem(Icons.card_giftcard, 'Services', false),
+          _buildNavItem(Icons.receipt, 'Orders', false),
+          _buildNavItem(Icons.person, 'Profile', true),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNavItem(IconData icon, String label, bool isActive) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          icon,
+          color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+          size: 24,
+        ),
+        Text(
+          label,
+          style: GoogleFonts.beVietnamPro(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+          ),
+        ),
+      ],
     );
   }
 

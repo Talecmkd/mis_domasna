@@ -1,5 +1,5 @@
-// lib/screens/product_detail_page.dart
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/product.dart';
 
 class ProductDetailPage extends StatelessWidget {
@@ -10,61 +10,120 @@ class ProductDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFE8F2E8),
       appBar: AppBar(
-        title: Text(product.name),
+        backgroundColor: Color(0xFFE8F2E8),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0xFF1C170D)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          product.name,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF1C170D),
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_cart, color: Color(0xFF1C170D)),
+            onPressed: () {},
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              product.imageUrl,
-              height: 300,
+            Container(
+              height: 260,
               width: double.infinity,
-              fit: BoxFit.cover,
+              color: Colors.white,
+              child: Image.network(
+                product.imageUrl,
+                fit: BoxFit.contain,
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: Theme.of(context).textTheme.headlineSmall,
+              padding: EdgeInsets.fromLTRB(16, 24, 16, 12),
+              child: Text(
+                product.name,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1C170D),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 20, 16, 12),
+              child: Text(
+                '\$${product.price.toStringAsFixed(2)}',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 28,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1C170D),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 20, 16, 12),
+              child: Text(
+                'Description',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1C170D),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 12),
+              child: Text(
+                product.description,
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF1C170D),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16, 4, 16, 12),
+              child: Text(
+                'Category: ${product.category}',
+                style: GoogleFonts.plusJakartaSans(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFFA1824A),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(16),
+              child: ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('${product.name} added to cart')),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF1AE51A),
+                  minimumSize: Size(double.infinity, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    '\$${product.price.toStringAsFixed(2)}',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                      color: Theme.of(context).primaryColor,
-                    ),
+                ),
+                child: Text(
+                  'Add to Cart',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF1C170D),
                   ),
-                  SizedBox(height: 16),
-                  Text(
-                    'Description',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  SizedBox(height: 8),
-                  Text(product.description),
-                  SizedBox(height: 16),
-                  Text(
-                    'Category: ${product.category}',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  SizedBox(height: 24),
-                  ElevatedButton(
-                    child: Text('Add to Cart'),
-                    onPressed: () {
-                      // TODO: Implement add to cart functionality
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${product.name} added to cart')),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: Size(double.infinity, 50),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ],

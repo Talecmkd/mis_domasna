@@ -1,57 +1,78 @@
-// lib/screens/help_support_page.dart
 import 'package:flutter/material.dart';
-import '../widgets/app_drawer.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HelpSupportPage extends StatelessWidget {
-  final List<Map<String, String>> faqList = [
-    {
-      'question': 'How do I place an order?',
-      'answer': 'To place an order, browse our products, add items to your cart, and proceed to checkout. Follow the prompts to complete your purchase.'
-    },
-    {
-      'question': 'What payment methods do you accept?',
-      'answer': 'We accept credit/debit cards, PayPal, and other major payment methods. You can view all available options at checkout.'
-    },
-    {
-      'question': 'How can I track my order?',
-      'answer': 'Once your order is shipped, you will receive a tracking number via email. You can use this number to track your package on our website or the carrier\'s site.'
-    },
-    {
-      'question': 'What is your return policy?',
-      'answer': 'We offer a 30-day return policy for most items. Please refer to our Returns & Refunds page for more detailed information.'
-    },
-    {
-      'question': 'How can I contact customer service?',
-      'answer': 'You can reach our customer service team via email at support@petshop.com or by phone at 1-800-PET-SHOP during our business hours.'
-    },
+  final List<String> questions = [
+    'How do I track my order?',
+    'How can I cancel my order?',
+    'What payment methods do you accept?',
+    'Do you offer free shipping?',
+    'Where is my order?',
+    'How can I return an item?',
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF8FBF7),
       appBar: AppBar(
-        title: Text('Help & Support'),
-      ),
-      drawer: AppDrawer(),
-      body: ListView(
-        children: [
+        backgroundColor: Color(0xFFF8FBF7),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0xFF0D1C0D)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Support',
+          style: GoogleFonts.inter(
+            fontSize: 16.5,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF5F675F),
+          ),
+        ),
+        centerTitle: true,
+        actions: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Frequently Asked Questions',
-              style: Theme.of(context).textTheme.titleLarge,
+            padding: EdgeInsets.only(right: 17),
+            child: Icon(Icons.search, color: Color(0xFF0D1C0D), size: 15),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.separated(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              itemCount: questions.length,
+              separatorBuilder: (context, index) => Divider(
+                color: Color(0xFFD9EDD8),
+                height: 3,
+              ),
+              itemBuilder: (context, index) => _buildQuestionItem(questions[index]),
             ),
           ),
-          ...faqList.map((faq) => _buildFAQItem(context, faq)).toList(),
-          SizedBox(height: 20),
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: EdgeInsets.all(16),
             child: ElevatedButton(
-              child: Text('Contact Support'),
               onPressed: () {
-                // TODO: Implement contact support functionality
-                print('Contact support button pressed');
+                // Implement chat functionality
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Color(0xFF18E619),
+                foregroundColor: Color(0xFF126411),
+                minimumSize: Size(double.infinity, 45),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                  side: BorderSide(color: Color(0xFF3FEA3F)),
+                ),
+              ),
+              child: Text(
+                'Chat with us',
+                style: GoogleFonts.inter(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
         ],
@@ -59,18 +80,25 @@ class HelpSupportPage extends StatelessWidget {
     );
   }
 
-  Widget _buildFAQItem(BuildContext context, Map<String, String> faq) {
-    return ExpansionTile(
+  Widget _buildQuestionItem(String question) {
+    return ListTile(
+      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       title: Text(
-        faq['question']!,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(faq['answer']!),
+        question,
+        style: GoogleFonts.inter(
+          fontSize: 12.8,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF838A83),
         ),
-      ],
+      ),
+      trailing: Icon(
+        Icons.arrow_forward_ios,
+        size: 13,
+        color: Color(0xFF838A83),
+      ),
+      onTap: () {
+        // Handle question tap
+      },
     );
   }
 }

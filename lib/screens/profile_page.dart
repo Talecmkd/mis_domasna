@@ -1,5 +1,5 @@
-// lib/screens/profile_page.dart
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../widgets/app_drawer.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -8,87 +8,111 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // Dummy user data
-  String _name = 'John Doe';
-  String _email = 'johndoe@example.com';
-  String _phone = '+1 234 567 8900';
+  String _name = 'Allison Wong';
+  String _email = 'allisonwong@gmail.com';
+  String _phone = '1(650)555-1234';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFF8FBF7),
       appBar: AppBar(
-        title: Text('My Profile'),
+        backgroundColor: Color(0xFFF8FBF7),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(0xFF0D1C0D)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Profile',
+          style: GoogleFonts.inter(
+            fontSize: 16.9,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF596259),
+          ),
+        ),
+        centerTitle: true,
       ),
-      drawer: AppDrawer(),
-      body: ListView(
-        padding: EdgeInsets.all(16.0),
-        children: [
-          CircleAvatar(
-            radius: 50,
-            child: Icon(Icons.person, size: 50),
-          ),
-          SizedBox(height: 16),
-          Text(_name, style: Theme.of(context).textTheme.titleLarge, textAlign: TextAlign.center),
-          SizedBox(height: 24),
-          ListTile(
-            title: Text('Email'),
-            subtitle: Text(_email),
-            trailing: Icon(Icons.edit),
-            onTap: () => _showEditDialog('Email', _email),
-          ),
-          ListTile(
-            title: Text('Phone'),
-            subtitle: Text(_phone),
-            trailing: Icon(Icons.edit),
-            onTap: () => _showEditDialog('Phone', _phone),
-          ),
-          ListTile(
-            title: Text('Change Password'),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              // TODO: Implement change password functionality
-            },
-          ),
-          ListTile(
-            title: Text('Shipping Addresses'),
-            trailing: Icon(Icons.arrow_forward_ios),
-            onTap: () {
-              // TODO: Navigate to shipping addresses page
-            },
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            Center(
+              child: Container(
+                width: 223,
+                height: 235,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    image: NetworkImage('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop'),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            _buildProfileItem(Icons.person, _name),
+            _buildProfileItem(Icons.email, _email),
+            _buildProfileItem(Icons.phone, _phone),
+            _buildProfileItem(Icons.lock, 'Password', showArrow: true),
+            _buildProfileItem(Icons.location_on, 'Shipping Address', showArrow: true),
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFFE7F3E8),
+                  minimumSize: Size(double.infinity, 38),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    side: BorderSide(color: Color(0xFFEDF4ED)),
+                  ),
+                ),
+                child: Text(
+                  'Log Out',
+                  style: GoogleFonts.inter(
+                    fontSize: 13.3,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF5D695D),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  void _showEditDialog(String field, String currentValue) {
-    TextEditingController _controller = TextEditingController(text: currentValue);
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Edit $field'),
-        content: TextField(
-          controller: _controller,
-          decoration: InputDecoration(labelText: field),
-        ),
-        actions: [
-          TextButton(
-            child: Text('Cancel'),
-            onPressed: () => Navigator.of(context).pop(),
+  Widget _buildProfileItem(IconData icon, String text, {bool showArrow = false}) {
+    return Container(
+      height: 52,
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          Container(
+            width: 38,
+            height: 38,
+            decoration: BoxDecoration(
+              color: Color(0xFFDDEEDD),
+              borderRadius: BorderRadius.circular(7.25),
+            ),
+            child: Icon(icon, color: Color(0xFF7D857D), size: 20),
           ),
-          TextButton(
-            child: Text('Save'),
-            onPressed: () {
-              setState(() {
-                if (field == 'Email') {
-                  _email = _controller.text;
-                } else if (field == 'Phone') {
-                  _phone = _controller.text;
-                }
-              });
-              Navigator.of(context).pop();
-            },
+          SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              text,
+              style: GoogleFonts.inter(
+                fontSize: 14.6,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF7D857D),
+              ),
+            ),
           ),
+          if (showArrow)
+            Icon(Icons.arrow_forward_ios, color: Color(0xFF7D857D), size: 18),
         ],
       ),
     );

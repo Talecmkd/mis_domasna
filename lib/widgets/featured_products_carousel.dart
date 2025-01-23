@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../models/product.dart';
 import '../screens/product_detail_page.dart';
 
@@ -48,7 +49,7 @@ class _FeaturedProductsCarouselState extends State<FeaturedProductsCarousel> {
             },
           ),
         ),
-        SizedBox(height: 10),
+        SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(
@@ -86,53 +87,61 @@ class _FeaturedProductsCarouselState extends State<FeaturedProductsCarousel> {
             ),
           );
         },
-        child: Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Color(0xFF1C170D).withOpacity(0.08),
+                blurRadius: 24,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                Image.network(
                   product.imageUrl,
                   fit: BoxFit.cover,
                 ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [Colors.black.withOpacity(0.8), Colors.transparent],
-                    ),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        product.name,
-                        style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [
+                          Color(0xFF1C170D).withOpacity(0.8),
+                          Color(0xFF1C170D).withOpacity(0),
+                        ],
                       ),
-                      SizedBox(height: 5),
-                      Text(
-                        '\$${product.price.toStringAsFixed(2)}',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                    ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          product.name,
+                          style: GoogleFonts.plusJakartaSans(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -146,7 +155,9 @@ class _FeaturedProductsCarouselState extends State<FeaturedProductsCarousel> {
       margin: EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: _currentPage == index ? Colors.blue : Colors.grey,
+        color: _currentPage == index
+            ? Color(0xFF1AE51A)
+            : Color(0xFF1C170D).withOpacity(0.2),
       ),
     );
   }
