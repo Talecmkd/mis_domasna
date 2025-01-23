@@ -62,6 +62,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 _buildListItem('Privacy Policy'),
                 _buildListItem('Terms of Service'),
                 _buildListItem('Version', subtitle: '1.0.0'),
+                _buildListItem('Support'),
+
               ],
             ),
           ),
@@ -113,9 +115,14 @@ class _SettingsPageState extends State<SettingsPage> {
         color: Color(0xFF0D1C0D),
         size: 18,
       ) : null,
-      onTap: onTap,
+      onTap: onTap ?? () {
+        if (title == 'Support') {
+          Navigator.pushNamed(context, '/support');
+        }
+      },
     );
   }
+
 
   Widget _buildSwitchItem(String title, bool value, Function(bool) onChanged) {
     return SwitchListTile(

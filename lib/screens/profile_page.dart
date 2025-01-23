@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/bottom_nav_bar.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -51,6 +52,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             SizedBox(height: 20),
+            _buildProfileItem(Icons.settings, "Settings"),
             _buildProfileItem(Icons.person, _name),
             _buildProfileItem(Icons.email, _email),
             _buildProfileItem(Icons.phone, _phone),
@@ -82,39 +84,48 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
+        bottomNavigationBar: BottomNavBar(currentRoute: '/profile',)
     );
   }
 
   Widget _buildProfileItem(IconData icon, String text, {bool showArrow = false}) {
-    return Container(
-      height: 52,
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Container(
-            width: 38,
-            height: 38,
-            decoration: BoxDecoration(
-              color: Color(0xFFDDEEDD),
-              borderRadius: BorderRadius.circular(7.25),
+    return GestureDetector(
+      onTap: () {
+        if (text == "Settings") {
+          Navigator.pushNamed(context, '/settings');
+        }
+      },
+      child: Container(
+        height: 52,
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Row(
+          children: [
+            Container(
+              width: 38,
+              height: 38,
+              decoration: BoxDecoration(
+                color: Color(0xFFDDEEDD),
+                borderRadius: BorderRadius.circular(7.25),
+              ),
+              child: Icon(icon, color: Color(0xFF7D857D), size: 20),
             ),
-            child: Icon(icon, color: Color(0xFF7D857D), size: 20),
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              text,
-              style: GoogleFonts.inter(
-                fontSize: 14.6,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF7D857D),
+            SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                text,
+                style: GoogleFonts.inter(
+                  fontSize: 14.6,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF7D857D),
+                ),
               ),
             ),
-          ),
-          if (showArrow)
-            Icon(Icons.arrow_forward_ios, color: Color(0xFF7D857D), size: 18),
-        ],
+            if (showArrow)
+              Icon(Icons.arrow_forward_ios, color: Color(0xFF7D857D), size: 18),
+          ],
+        ),
       ),
     );
   }
+
 }

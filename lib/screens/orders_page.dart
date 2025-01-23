@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mis_domasna/screens/wishlist_page.dart';
 import '../models/order.dart';
 import '../widgets/app_drawer.dart';
 import 'package:intl/intl.dart';
+
+import '../widgets/bottom_nav_bar.dart';
+import 'cart_page.dart';
 
 class OrdersPage extends StatelessWidget {
   @override
@@ -20,6 +24,24 @@ class OrdersPage extends StatelessWidget {
             color: Color(0xFF0D1C0D),
           ),
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.shopping_cart, color: Color(0xFF0D1C0D)),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => CartPage()),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.favorite_border_outlined, color: Color(0xFF4F964F)),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => WishlistPage()),
+              );
+            },
+          ),
+        ],
       ),
       drawer: AppDrawer(),
       body: sampleOrders.isEmpty
@@ -55,8 +77,9 @@ class OrdersPage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: _buildBottomNavBar(),
+        bottomNavigationBar: BottomNavBar(currentRoute: '/orders',)
     );
+
   }
 
   Widget _buildOrderItem(BuildContext context, Order order) {
@@ -141,47 +164,6 @@ class OrdersPage extends StatelessWidget {
             .map((order) => _buildOrderItem(context, order))
             .toList(),
       ),
-    );
-  }
-
-  Widget _buildBottomNavBar() {
-    return Container(
-      height: 75,
-      decoration: BoxDecoration(
-        color: Color(0xFFF7FCF7),
-        border: Border(top: BorderSide(color: Color(0xFFE8F2E8))),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(Icons.home, 'Home', false),
-          _buildNavItem(Icons.search, 'Categories', false),
-          _buildNavItem(Icons.card_giftcard, 'Services', false),
-          _buildNavItem(Icons.receipt, 'Orders', true),
-          _buildNavItem(Icons.person, 'Profile', false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, bool isActive) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon,
-          color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
-          size: 24,
-        ),
-        Text(
-          label,
-          style: GoogleFonts.beVietnamPro(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-            color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
-          ),
-        ),
-      ],
     );
   }
 }

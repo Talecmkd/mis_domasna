@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mis_domasna/screens/wishlist_page.dart';
 import '../models/pet_service.dart';
 import '../models/product.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/bottom_nav_bar.dart';
 import '../widgets/category_section.dart';
 import '../widgets/featured_products_carousel.dart';
 import '../widgets/pet_services_section.dart';
@@ -54,9 +56,16 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
+          IconButton(
+            icon: Icon(Icons.favorite_border_outlined, color: Color(0xFF4F964F)),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => WishlistPage()),
+              );
+            },
+          ),
         ],
       ),
-      drawer: AppDrawer(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,47 +119,51 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFFF7FCF7),
-          border: Border(top: BorderSide(color: Color(0xFFE8F2E8))),
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.home, 'Home', true),
-              _buildNavItem(Icons.search, 'Categories', false),
-              _buildNavItem(Icons.card_giftcard, 'Services', false),
-              _buildNavItem(Icons.receipt, 'Orders', false),
-              _buildNavItem(Icons.person, 'Profile', false),
-            ],
-          ),
-        ),
-      ),
+      bottomNavigationBar: BottomNavBar(currentRoute: '/',)
     );
   }
 
   Widget _buildNavItem(IconData icon, String label, bool isActive) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          icon,
-          color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
-          size: 24,
-        ),
-        Text(
-          label,
-          style: GoogleFonts.beVietnamPro(
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
+    return GestureDetector(
+      onTap: () {
+        switch (label) {
+          case 'Home':
+            Navigator.pushReplacementNamed(context, '/');
+            break;
+          case 'Categories':
+            Navigator.pushNamed(context, '/categories');
+            break;
+          case 'Services':
+            Navigator.pushNamed(context, '/services');
+            break;
+          case 'Orders':
+            Navigator.pushNamed(context, '/orders');
+            break;
+          case 'Profile':
+            Navigator.pushNamed(context, '/profile');
+            break;
+        }
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
             color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+            size: 24,
           ),
-        ),
-      ],
+          Text(
+            label,
+            style: GoogleFonts.beVietnamPro(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+            ),
+          ),
+        ],
+      ),
     );
   }
+
 }
 

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mis_domasna/screens/category_products_page.dart';
+import 'package:mis_domasna/screens/wishlist_page.dart';
 import '../models/product.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/bottom_nav_bar.dart';
+import 'cart_page.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -41,7 +44,17 @@ class _CategoryPageState extends State<CategoryPage> {
           IconButton(
             icon: Icon(Icons.shopping_cart, color: Color(0xFF0D1C0D)),
             onPressed: () {
-              Navigator.pushNamed(context, '/cart');
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => CartPage()),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.favorite_border_outlined, color: Color(0xFF4F964F)),
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => WishlistPage()),
+              );
             },
           ),
         ],
@@ -75,6 +88,8 @@ class _CategoryPageState extends State<CategoryPage> {
           ),
         ],
       ),
+        bottomNavigationBar: BottomNavBar(currentRoute: '/categories',)
+
     );
   }
 
