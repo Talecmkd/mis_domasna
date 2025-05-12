@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/pet_service.dart';
+import './service_booking_page.dart';
 
 class ServiceDetailPage extends StatelessWidget {
   final PetService service;
@@ -40,12 +41,18 @@ class ServiceDetailPage extends StatelessWidget {
             Container(
               height: 218,
               width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                image: DecorationImage(
-                  image: NetworkImage('https://images.unsplash.com/photo-1559599101-f09722fb4948?q=80&w=1000&auto=format&fit=crop'),
-                  fit: BoxFit.cover,
-                ),
+              child: Image.network(
+                service.imageUrl,
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.grey[200],
+                    child: Icon(
+                      Icons.error_outline,
+                      color: Colors.grey[400],
+                    ),
+                  );
+                },
               ),
             ),
             Padding(
@@ -112,7 +119,14 @@ class ServiceDetailPage extends StatelessWidget {
       bottomNavigationBar: Padding(
         padding: EdgeInsets.all(16),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ServiceBookingPage(service: service),
+              ),
+            );
+          },
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFF1AE51A),
             minimumSize: Size(double.infinity, 48),

@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mis_domasna/screens/service_detail_page.dart';
 import 'package:mis_domasna/screens/wishlist_page.dart';
 import '../models/pet_service.dart';
-import '../widgets/app_drawer.dart';
 import '../widgets/bottom_nav_bar.dart';
+import '../widgets/service_card.dart';
 import 'cart_page.dart';
 
 class PetServicesPage extends StatelessWidget {
@@ -20,9 +20,9 @@ class PetServicesPage extends StatelessWidget {
           children: [
             Text(
               'Pet Services',
-              style: GoogleFonts.inter(
+              style: GoogleFonts.plusJakartaSans(
                 color: Color(0xFF515950),
-                fontSize: 16.9,
+                fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -48,93 +48,28 @@ class PetServicesPage extends StatelessWidget {
         ],
       ),
       body: ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 28, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
         itemCount: sampleServices.length,
         itemBuilder: (context, index) {
-          return _buildServiceCard(context, sampleServices[index]);
+          final service = sampleServices[index];
+          return Padding(
+            padding: EdgeInsets.only(bottom: 16),
+            child: ServiceCard(
+              service: service,
+              isHorizontal: false,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ServiceDetailPage(service: service),
+                  ),
+                );
+              },
+            ),
+          );
         },
       ),
-        bottomNavigationBar: BottomNavBar(currentRoute: '/services',)
-    );
-  }
-
-  Widget _buildServiceCard(BuildContext context, PetService service) {
-    return Card(
-      elevation: 0,
-      margin: EdgeInsets.only(bottom: 8),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    service.name,
-                    style: GoogleFonts.inter(
-                      color: Color(0xFF586058),
-                      fontSize: 15.4,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    '${service.name}, ${service.duration}',
-                    style: GoogleFonts.inter(
-                      color: Color(0xFF98C197),
-                      fontSize: 12.9,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ServiceDetailPage(service: service),
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFE8F3E8),
-                      elevation: 0,
-                      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.5),
-                      ),
-                    ),
-                    child: Text(
-                      'Book \$${service.price.toStringAsFixed(0)}',
-                      style: GoogleFonts.inter(
-                        color: Color(0xFF606C60),
-                        fontSize: 12.9,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: 100,
-              height: 80,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: NetworkImage(service.imageUrl),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: BottomNavBar(currentRoute: '/services'),
     );
   }
 }

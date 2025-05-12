@@ -12,6 +12,8 @@ class CartItem {
     required this.product,
     this.quantity = 1,
   });
+
+  double get total => product.price * quantity;
 }
 
 class Cart with ChangeNotifier {
@@ -22,22 +24,18 @@ class Cart with ChangeNotifier {
   }
 
   int get itemCount {
-    return _items.length;
+    return _items.values.fold(0, (sum, item) => sum + item.quantity);
   }
 
   double get totalAmount {
-    var total = 0.0;
-    _items.forEach((key, cartItem) {
-      total += cartItem.product.price * cartItem.quantity;
-    });
-    return total;
+    return _items.values.fold(0.0, (sum, item) => sum + item.total);
   }
 
   void addItem(Product product) {
     if (_items.containsKey(product.id)) {
       _items.update(
         product.id,
-            (existingCartItem) => CartItem(
+        (existingCartItem) => CartItem(
           id: existingCartItem.id,
           product: existingCartItem.product,
           quantity: existingCartItem.quantity + 1,
@@ -46,7 +44,7 @@ class Cart with ChangeNotifier {
     } else {
       _items.putIfAbsent(
         product.id,
-            () => CartItem(
+        () => CartItem(
           id: DateTime.now().toString(),
           product: product,
         ),
@@ -58,6 +56,23 @@ class Cart with ChangeNotifier {
   void removeItem(String productId) {
     _items.remove(productId);
     notifyListeners();
+  }
+
+  void updateQuantity(String productId, int quantity) {
+    if (!_items.containsKey(productId)) return;
+    if (quantity <= 0) {
+      removeItem(productId);
+    } else {
+      _items.update(
+        productId,
+        (existingCartItem) => CartItem(
+          id: existingCartItem.id,
+          product: existingCartItem.product,
+          quantity: quantity,
+        ),
+      );
+      notifyListeners();
+    }
   }
 
   void clear() {

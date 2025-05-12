@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "385635251522",
+    "project_id": "pet-shop-app-44baf",
+    "storage_bucket": "pet-shop-app-44baf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:385635251522:android:1932258c460f84297544db",
+        "android_client_info": {
+          "package_name": "com.example.mis_domasna"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZrG-A9FOXQMR6d7mNYQoUsLLrtpi5PMM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

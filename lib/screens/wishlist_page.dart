@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../models/product.dart';
+import '../models/cart.dart';
+import '../providers/store_provider.dart';
 import '../widgets/app_drawer.dart';
+import '../widgets/bottom_nav_bar.dart';
 import 'product_detail_page.dart';
 
-class WishlistPage extends StatefulWidget {
-  @override
-  _WishlistPageState createState() => _WishlistPageState();
-}
-
-class _WishlistPageState extends State<WishlistPage> {
-  List<Product> wishlistItems = sampleProducts.take(3).toList();
-
-  void _deleteItem(Product product) {
-    setState(() {
-      wishlistItems.removeWhere((item) => item.id == product.id);
-    });
-  }
-
+class WishlistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,130 +25,219 @@ class _WishlistPageState extends State<WishlistPage> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: wishlistItems.isEmpty
-                ? Center(child: Text('Your wishlist is empty!'))
-                : ListView.builder(
-              itemCount: wishlistItems.length,
-              itemBuilder: (ctx, i) => _buildWishlistItem(context, wishlistItems[i]),
+      body: Consumer<StoreProvider>(
+        builder: (context, storeProvider, child) {
+          if (storeProvider.error != null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Error: ${storeProvider.error}'),
+                  ElevatedButton(
+                    onPressed: () => storeProvider.initializeStore(),
+                    child: Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          if (storeProvider.isLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          final wishlistProducts = storeProvider.wishlistProducts;
+
+          if (wishlistProducts.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.favorite_border,
+                    size: 64,
+                    color: Color(0xFF9AC49A),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Your wishlist is empty',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1C170D),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Add items you love to your wishlist',
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      color: Color(0xFF6C736B),
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF1AE51A),
+                      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                    ),
+                    child: Text(
+                      'Start Shopping',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF1C170D),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            itemCount: wishlistProducts.length,
+            itemBuilder: (context, index) => _buildWishlistItem(
+              context,
+              wishlistProducts[index],
+              storeProvider,
             ),
-          ),
-          _buildBottomNavBar(),
-        ],
+          );
+        },
       ),
+      bottomNavigationBar: BottomNavBar(currentRoute: '/wishlist'),
     );
   }
 
-  Widget _buildWishlistItem(BuildContext context, Product product) {
-    return Container(
-      height: 67,
-      margin: EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6.5),
-              child: Image.network(
-                product.imageUrl,
-                width: 53,
-                height: 53,
-                fit: BoxFit.cover,
+  Widget _buildWishlistItem(
+    BuildContext context,
+    Product product,
+    StoreProvider storeProvider,
+  ) {
+    return Dismissible(
+      key: ValueKey(product.id),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.only(right: 20),
+        color: Colors.red.shade100,
+        child: Icon(Icons.delete, color: Colors.red),
+      ),
+      confirmDismiss: (direction) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Remove from Wishlist'),
+            content: Text('Do you want to remove this item from your wishlist?'),
+            actions: [
+              TextButton(
+                child: Text('No'),
+                onPressed: () => Navigator.of(ctx).pop(false),
               ),
+              TextButton(
+                child: Text('Yes'),
+                onPressed: () => Navigator.of(ctx).pop(true),
+              ),
+            ],
+          ),
+        );
+      },
+      onDismissed: (direction) {
+        storeProvider.removeFromWishlist(product.id);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${product.name} removed from wishlist'),
+            action: SnackBarAction(
+              label: 'UNDO',
+              onPressed: () {
+                storeProvider.addToWishlist(product);
+              },
             ),
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+        );
+      },
+      child: Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ProductDetailPage(product: product),
+              ),
+            );
+          },
+          child: Padding(
+            padding: EdgeInsets.all(12),
+            child: Row(
               children: [
-                Text(
-                  product.name,
-                  style: GoogleFonts.inter(
-                    color: Color(0xFF6C736B),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    image: DecorationImage(
+                      image: NetworkImage(product.imageUrl),
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
-                SizedBox(height: 4),
-                Text(
-                  '\$${product.price.toStringAsFixed(2)}',
-                  style: GoogleFonts.inter(
-                    color: Color(0xFF9AC49A),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        product.name,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF1C170D),
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        '\$${product.price.toStringAsFixed(2)}',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF9AC49A),
+                        ),
+                      ),
+                    ],
                   ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.shopping_cart_outlined),
+                  onPressed: () {
+                    final cart = Provider.of<Cart>(context, listen: false);
+                    cart.addItem(product);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('${product.name} added to cart'),
+                        action: SnackBarAction(
+                          label: 'UNDO',
+                          onPressed: () {
+                            cart.removeItem(product.id);
+                          },
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: ElevatedButton(
-              onPressed: () => _deleteItem(product),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFE8F3E8),
-                elevation: 0,
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-              child: Text(
-                'Remove',
-                style: GoogleFonts.inter(
-                  color: Color(0xFF687568),
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBottomNavBar() {
-    return Container(
-      height: 70,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFE8F2E8))),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _buildNavItem(Icons.home, 'Home', true),
-          _buildNavItem(Icons.search, 'Categories', false),
-          _buildNavItem(Icons.card_giftcard, 'Services', false),
-          _buildNavItem(Icons.receipt, 'Orders', false),
-          _buildNavItem(Icons.person, 'Profile', false),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, String label, bool isSelected) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          icon,
-          color: Color(0xFF4F964F),
-          size: 24,
         ),
-        Text(
-          label,
-          style: GoogleFonts.beVietnamPro(
-            color: Color(0xFF4F964F),
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

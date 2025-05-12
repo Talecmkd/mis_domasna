@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:mis_domasna/screens/wishlist_page.dart';
 import '../models/pet_service.dart';
 import '../models/product.dart';
+import '../providers/store_provider.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/category_section.dart';
@@ -17,21 +19,38 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String? selectedCategory;
-
-  void selectCategory(String? category) {
-    setState(() {
-      selectedCategory = category;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    List<Product> filteredProducts = selectedCategory == null
-        ? sampleProducts
-        : sampleProducts.where((product) => product.category == selectedCategory).toList();
+    final storeProvider = Provider.of<StoreProvider>(context);
+    
+    if (storeProvider.error != null) {
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Error: ${storeProvider.error}'),
+              ElevatedButton(
+                onPressed: () => storeProvider.initializeStore(),
+                child: Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
 
-    List<Product> featuredProducts = filteredProducts.where((product) => product.isFeatured).toList();
+    if (storeProvider.isLoading) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    final products = storeProvider.products;
+    final featuredProducts = storeProvider.featuredProducts;
+    final services = storeProvider.services;
 
     return Scaffold(
       backgroundColor: Color(0xFFF7FCF7),
@@ -39,7 +58,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Color(0xFFF7FCF7),
         elevation: 0,
         title: Text(
-          'Pet Shop',
+          'My Pet Shop',
           style: GoogleFonts.beVietnamPro(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -66,7 +85,9 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: RefreshIndicator(
+        onRefresh: () => storeProvider.initializeStore(),
+        child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -97,6 +118,14 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+              if (featuredProducts.isEmpty)
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text('No featured products available'),
+                  ),
+                )
+              else
             FeaturedProductsCarousel(featuredProducts: featuredProducts),
             Padding(
               padding: EdgeInsets.fromLTRB(16, 20, 16, 12),
@@ -110,13 +139,30 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             CategorySection(
-              products: sampleProducts,
-              onSelectCategory: selectCategory,
-              selectedCategory: selectedCategory,
+                products: products,
+                onSelectCategory: storeProvider.setSelectedCategory,
+                selectedCategory: storeProvider.selectedCategory,
             ),
-            PopularProductsGrid(products: filteredProducts),
-            PetServicesSection(services: sampleServices),
+              if (products.isEmpty)
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text('No products available'),
+                  ),
+                )
+              else
+                PopularProductsGrid(products: products),
+              if (services.isEmpty)
+                Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text('No services available'),
+                  ),
+                )
+              else
+                PetServicesSection(services: services),
           ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavBar(currentRoute: '/',)

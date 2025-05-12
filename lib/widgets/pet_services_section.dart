@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/pet_service.dart';
 import '../screens/service_detail_page.dart';
+import '../widgets/service_card.dart';
 
 class PetServicesSection extends StatelessWidget {
   final List<PetService> services;
@@ -28,7 +29,7 @@ class PetServicesSection extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
-                  // Navigate to all services
+                  Navigator.pushNamed(context, '/services');
                 },
                 child: Text(
                   'See All',
@@ -42,91 +43,28 @@ class PetServicesSection extends StatelessWidget {
             ],
           ),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.8,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-            ),
+        SizedBox(
+          height: 250,
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            scrollDirection: Axis.horizontal,
             itemCount: services.length,
             itemBuilder: (context, index) {
-              return _buildServiceCard(context, services[index]);
+              return ServiceCard(
+                service: services[index],
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ServiceDetailPage(service: services[index]),
+                    ),
+                  );
+                },
+              );
             },
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildServiceCard(BuildContext context, PetService service) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      color: Colors.white,
-      child: InkWell(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ServiceDetailPage(service: service),
-            ),
-          );
-        },
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  image: DecorationImage(
-                    image: NetworkImage(service.imageUrl),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              SizedBox(height: 12),
-              Text(
-                service.name,
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF0D1C0D),
-                ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                service.description,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 12,
-                  color: Color(0xFF4F964F),
-                ),
-              ),
-              Spacer(),
-              Text(
-                '\$${service.price.toStringAsFixed(0)}',
-                style: GoogleFonts.beVietnamPro(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF0D1C0D),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../models/product.dart';
+import '../models/cart.dart';
+import 'cart_page.dart';
 
 class ProductDetailPage extends StatelessWidget {
   final Product product;
@@ -9,6 +12,8 @@ class ProductDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cart = Provider.of<Cart>(context, listen: false);
+    
     return Scaffold(
       backgroundColor: Color(0xFFE8F2E8),
       appBar: AppBar(
@@ -27,9 +32,43 @@ class ProductDetailPage extends StatelessWidget {
           ),
         ),
         actions: [
-          IconButton(
-            icon: Icon(Icons.shopping_cart, color: Color(0xFF1C170D)),
-            onPressed: () {},
+          Stack(
+            children: [
+              IconButton(
+                icon: Icon(Icons.shopping_cart, color: Color(0xFF1C170D)),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CartPage()),
+                  );
+                },
+              ),
+              if (cart.itemCount > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: Container(
+                    padding: EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF1AE51A),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    constraints: BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      '${cart.itemCount}',
+                      style: TextStyle(
+                        color: Color(0xFF1C170D),
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ],
       ),
@@ -105,8 +144,19 @@ class ProductDetailPage extends StatelessWidget {
               padding: EdgeInsets.all(16),
               child: ElevatedButton(
                 onPressed: () {
+                  cart.addItem(product);
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('${product.name} added to cart')),
+                    SnackBar(
+                      content: Text('${product.name} added to cart'),
+                      duration: Duration(seconds: 2),
+                      action: SnackBarAction(
+                        label: 'UNDO',
+                        onPressed: () {
+                          cart.removeItem(product.id);
+                        },
+                      ),
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
