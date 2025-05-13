@@ -38,6 +38,8 @@ class _FeaturedProductsCarouselState extends State<FeaturedProductsCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -51,7 +53,7 @@ class _FeaturedProductsCarouselState extends State<FeaturedProductsCarousel> {
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF0D1C0D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
               TextButton(
@@ -63,7 +65,7 @@ class _FeaturedProductsCarouselState extends State<FeaturedProductsCarousel> {
                   style: GoogleFonts.beVietnamPro(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF4F964F),
+                    color: theme.colorScheme.primary,
                   ),
                 ),
               ),
@@ -123,8 +125,8 @@ class _FeaturedProductsCarouselState extends State<FeaturedProductsCarousel> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: _currentPage == index
-                    ? Color(0xFF1AE51A)
-                    : Color(0xFF1C170D).withOpacity(0.2),
+                    ? theme.colorScheme.secondary
+                    : theme.colorScheme.onSurface.withOpacity(0.2),
               ),
             ),
           ),

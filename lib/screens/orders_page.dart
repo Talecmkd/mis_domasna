@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../widgets/bottom_nav_bar.dart';
 import 'cart_page.dart';
 import 'order_details_page.dart';
+import '../utils/navigation_utils.dart';
 
 class OrdersPage extends StatefulWidget {
   @override
@@ -140,22 +141,23 @@ class _OrdersPageState extends State<OrdersPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Color(0xFFF7FCF7),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFF7FCF7),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         title: Text(
           'Orders',
           style: GoogleFonts.beVietnamPro(
             fontSize: 24,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF0D1C0D),
+            color: theme.colorScheme.onSurface,
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart, color: Color(0xFF0D1C0D)),
+            icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onSurface),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => CartPage()),
@@ -163,7 +165,7 @@ class _OrdersPageState extends State<OrdersPage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.favorite_border_outlined, color: Color(0xFF4F964F)),
+            icon: Icon(Icons.favorite_border_outlined, color: theme.colorScheme.primary),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => WishlistPage()),
@@ -186,14 +188,14 @@ class _OrdersPageState extends State<OrdersPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF4F964F)),
+                          valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
                         ),
                         SizedBox(height: 16),
                         Text(
                           'Loading orders...',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 16,
-                            color: Color(0xFF6C736B),
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
                           ),
                         ),
                       ],
@@ -231,15 +233,15 @@ class _OrdersPageState extends State<OrdersPage> {
                     );
                   }
                   return Center(
-                    child: Column(
+        child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
+          children: [
                         Icon(Icons.error_outline, size: 48, color: Colors.red),
                         SizedBox(height: 16),
                         Text(
                           'Error loading orders',
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 18,
+                  fontSize: 18,
                             fontWeight: FontWeight.w600,
                             color: Color(0xFF1C170D),
                           ),
@@ -268,9 +270,9 @@ class _OrdersPageState extends State<OrdersPage> {
                             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24),
-                            ),
-                          ),
-                        ),
+                ),
+              ),
+            ),
                       ],
                     ),
                   );
@@ -287,7 +289,7 @@ class _OrdersPageState extends State<OrdersPage> {
                           Icon(
                             Icons.search_off,
                             size: 64,
-                            color: Color(0xFF9AC49A),
+                            color: theme.colorScheme.primary,
                           ),
                           SizedBox(height: 16),
                           Text(
@@ -295,7 +297,7 @@ class _OrdersPageState extends State<OrdersPage> {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF1C170D),
+                              color: theme.colorScheme.onSurface,
                             ),
                           ),
                           SizedBox(height: 8),
@@ -303,7 +305,7 @@ class _OrdersPageState extends State<OrdersPage> {
                             'Try adjusting your filters',
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
-                              color: Color(0xFF6C736B),
+                              color: theme.colorScheme.onSurface.withOpacity(0.6),
                             ),
                           ),
                         ],
@@ -317,15 +319,15 @@ class _OrdersPageState extends State<OrdersPage> {
                         Icon(
                           Icons.receipt_long_outlined,
                           size: 64,
-                          color: Color(0xFF9AC49A),
+                          color: theme.colorScheme.primary,
                         ),
                         SizedBox(height: 16),
                         Text(
                           'No orders yet',
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 18,
+                  fontSize: 18,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF1C170D),
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
                         SizedBox(height: 8),
@@ -333,7 +335,7 @@ class _OrdersPageState extends State<OrdersPage> {
                           'Your order history will appear here',
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 14,
-                            color: Color(0xFF6C736B),
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
                           ),
                         ),
                       ],
@@ -351,11 +353,15 @@ class _OrdersPageState extends State<OrdersPage> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavBar(currentRoute: '/orders'),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: NavigationUtils.getIndexFromRoute('/orders'),
+        onTap: (index) => NavigationUtils.handleNavigation(context, index),
+      ),
     );
   }
 
   Widget _buildOrderItem(BuildContext context, app_order.Order order) {
+    final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Card(
@@ -390,10 +396,10 @@ class _OrdersPageState extends State<OrdersPage> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) {
                         return Container(
-                          color: Colors.grey[200],
+                          color: theme.colorScheme.surface,
                           child: Icon(
                             Icons.error_outline,
-                            color: Colors.grey[400],
+                            color: theme.colorScheme.onSurface.withOpacity(0.4),
                           ),
                         );
                       },
@@ -410,7 +416,7 @@ class _OrdersPageState extends State<OrdersPage> {
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF1C170D),
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                       SizedBox(height: 4),
@@ -418,7 +424,7 @@ class _OrdersPageState extends State<OrdersPage> {
                         DateFormat('MMM d, y • h:mm a').format(order.dateTime),
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
-                          color: Color(0xFF4F964F),
+                          color: theme.colorScheme.primary,
                         ),
                       ),
                       SizedBox(height: 4),
@@ -426,7 +432,7 @@ class _OrdersPageState extends State<OrdersPage> {
                         '\$${order.totalAmount.toStringAsFixed(2)} • ${order.products.length} ${order.products.length == 1 ? 'item' : 'items'}',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
-                          color: Color(0xFF4F964F),
+                          color: theme.colorScheme.primary,
                         ),
                       ),
                     ],
@@ -434,7 +440,7 @@ class _OrdersPageState extends State<OrdersPage> {
                 ),
                 Icon(
                   Icons.arrow_forward_ios,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface,
                   size: 24,
                 ),
               ],

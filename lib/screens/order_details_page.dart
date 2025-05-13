@@ -11,19 +11,21 @@ class OrderDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: Color(0xFFE8F2E8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFE8F2E8),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF1C170D)),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Order Details',
           style: GoogleFonts.plusJakartaSans(
-            color: Color(0xFF1C170D),
+            color: theme.colorScheme.onSurface,
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
@@ -33,21 +35,22 @@ class OrderDetailsPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildOrderHeader(),
+            _buildOrderHeader(context),
             SizedBox(height: 16),
-            _buildOrderItems(),
+            _buildOrderItems(context),
             SizedBox(height: 16),
-            _buildOrderSummary(),
+            _buildOrderSummary(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOrderHeader() {
+  Widget _buildOrderHeader(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.all(16),
-      color: Colors.white,
+      color: theme.cardColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -59,13 +62,13 @@ class OrderDetailsPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: Color(0xFFE8F3E8),
+                  color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -73,7 +76,7 @@ class OrderDetailsPage extends StatelessWidget {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF4F964F),
+                    color: theme.colorScheme.primary,
                   ),
                 ),
               ),
@@ -84,7 +87,7 @@ class OrderDetailsPage extends StatelessWidget {
             DateFormat('MMMM d, y • h:mm a').format(order.dateTime),
             style: GoogleFonts.plusJakartaSans(
               fontSize: 14,
-              color: Color(0xFF6C736B),
+              color: theme.colorScheme.onSurface.withOpacity(0.7),
             ),
           ),
         ],
@@ -92,9 +95,10 @@ class OrderDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderItems() {
+  Widget _buildOrderItems(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
-      color: Colors.white,
+      color: theme.cardColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -105,17 +109,18 @@ class OrderDetailsPage extends StatelessWidget {
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF1C170D),
+                color: theme.colorScheme.onSurface,
               ),
             ),
           ),
-          ...order.products.map((product) => _buildOrderItem(product)),
+          ...order.products.map((product) => _buildOrderItem(context, product)),
         ],
       ),
     );
   }
 
-  Widget _buildOrderItem(Product product) {
+  Widget _buildOrderItem(BuildContext context, Product product) {
+    final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -133,10 +138,10 @@ class OrderDetailsPage extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    color: Colors.grey[200],
+                    color: theme.colorScheme.surface,
                     child: Icon(
                       Icons.error_outline,
-                      color: Colors.grey[400],
+                      color: theme.colorScheme.onSurface.withOpacity(0.4),
                     ),
                   );
                 },
@@ -153,7 +158,7 @@ class OrderDetailsPage extends StatelessWidget {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF1C170D),
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
                 SizedBox(height: 4),
@@ -161,7 +166,7 @@ class OrderDetailsPage extends StatelessWidget {
                   '\$${product.price.toStringAsFixed(2)}',
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 14,
-                    color: Color(0xFF4F964F),
+                    color: theme.colorScheme.primary,
                   ),
                 ),
               ],
@@ -172,10 +177,11 @@ class OrderDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderSummary() {
+  Widget _buildOrderSummary(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.all(16),
-      color: Colors.white,
+      color: theme.cardColor,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -184,17 +190,18 @@ class OrderDetailsPage extends StatelessWidget {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1C170D),
+              color: theme.colorScheme.onSurface,
             ),
           ),
           SizedBox(height: 16),
-          _buildSummaryRow('Subtotal', order.totalAmount),
+          _buildSummaryRow(context, 'Subtotal', order.totalAmount),
           SizedBox(height: 8),
-          _buildSummaryRow('Shipping', 0),
+          _buildSummaryRow(context, 'Shipping', 0),
           SizedBox(height: 8),
-          _buildSummaryRow('Tax', order.totalAmount * 0.1),
-          Divider(height: 24),
+          _buildSummaryRow(context, 'Tax', order.totalAmount * 0.1),
+          Divider(height: 24, color: theme.dividerColor),
           _buildSummaryRow(
+            context,
             'Total',
             order.totalAmount + (order.totalAmount * 0.1),
             isTotal: true,
@@ -204,7 +211,8 @@ class OrderDetailsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryRow(String label, double amount, {bool isTotal = false}) {
+  Widget _buildSummaryRow(BuildContext context, String label, double amount, {bool isTotal = false}) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -213,7 +221,7 @@ class OrderDetailsPage extends StatelessWidget {
           style: GoogleFonts.plusJakartaSans(
             fontSize: isTotal ? 16 : 14,
             fontWeight: isTotal ? FontWeight.w700 : FontWeight.w500,
-            color: Color(0xFF1C170D),
+            color: theme.colorScheme.onSurface,
           ),
         ),
         Text(
@@ -221,7 +229,7 @@ class OrderDetailsPage extends StatelessWidget {
           style: GoogleFonts.plusJakartaSans(
             fontSize: isTotal ? 16 : 14,
             fontWeight: isTotal ? FontWeight.w700 : FontWeight.w500,
-            color: Color(0xFF1C170D),
+            color: theme.colorScheme.onSurface,
           ),
         ),
       ],

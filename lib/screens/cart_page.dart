@@ -8,19 +8,21 @@ import 'product_detail_page.dart';
 class CartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: Color(0xFFE8F2E8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFE8F2E8),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF1C170D)),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Your Cart',
           style: GoogleFonts.plusJakartaSans(
-            color: Color(0xFF1C170D),
+            color: theme.colorScheme.onSurface,
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
@@ -53,10 +55,10 @@ class CartPage extends StatelessWidget {
                 ),
               );
             },
-            icon: Icon(Icons.remove_shopping_cart, color: Color(0xFF1C170D)),
+            icon: Icon(Icons.remove_shopping_cart, color: theme.colorScheme.onSurface),
             label: Text(
               'Clear',
-              style: TextStyle(color: Color(0xFF1C170D)),
+              style: TextStyle(color: theme.colorScheme.onSurface),
             ),
           ),
         ],
@@ -71,7 +73,7 @@ class CartPage extends StatelessWidget {
                   Icon(
                     Icons.shopping_cart_outlined,
                     size: 64,
-                    color: Color(0xFF9AC49A),
+                    color: theme.colorScheme.primary,
                   ),
                   SizedBox(height: 16),
                   Text(
@@ -79,7 +81,7 @@ class CartPage extends StatelessWidget {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF1C170D),
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   SizedBox(height: 8),
@@ -87,14 +89,14 @@ class CartPage extends StatelessWidget {
                     'Add items to start shopping',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
-                      color: Color(0xFF6C736B),
+                      color: theme.colorScheme.onSurface.withOpacity(0.7),
                     ),
                   ),
                   SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF1AE51A),
+                      backgroundColor: theme.colorScheme.secondary,
                       padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
@@ -105,7 +107,7 @@ class CartPage extends StatelessWidget {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF1C170D),
+                        color: theme.colorScheme.onSecondary,
                       ),
                     ),
                   ),
@@ -129,10 +131,10 @@ class CartPage extends StatelessWidget {
               Container(
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.cardColor,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: theme.shadowColor.withOpacity(0.05),
                       blurRadius: 10,
                       offset: Offset(0, -5),
                     ),
@@ -150,7 +152,7 @@ class CartPage extends StatelessWidget {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF1C170D),
+                              color: theme.colorScheme.onSurface,
                             ),
                           ),
                           Text(
@@ -158,7 +160,7 @@ class CartPage extends StatelessWidget {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF1C170D),
+                              color: theme.colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -184,15 +186,11 @@ class CartPage extends StatelessWidget {
                                         child: Text('Proceed'),
                                         onPressed: () async {
                                           try {
-                                            // Create the order in Firebase
                                             await firestoreService.createOrder(
                                               cart.items.values.toList(),
                                               cart.totalAmount,
                                             );
-                                            
-                                            // Clear the cart
                                             cart.clear();
-                                            
                                             Navigator.of(ctx).pop();
                                             ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
@@ -217,7 +215,8 @@ class CartPage extends StatelessWidget {
                                 );
                               },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF1AE51A),
+                          backgroundColor: theme.colorScheme.secondary,
+                          disabledBackgroundColor: theme.colorScheme.surface.withOpacity(0.5),
                           minimumSize: Size(double.infinity, 48),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(24),
@@ -228,7 +227,7 @@ class CartPage extends StatelessWidget {
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF1C170D),
+                            color: theme.colorScheme.onSecondary,
                           ),
                         ),
                       ),
@@ -316,44 +315,44 @@ class CartItemWidget extends StatelessWidget {
           },
           child: Padding(
             padding: EdgeInsets.all(8),
-            child: Row(
-              children: [
-                Container(
+      child: Row(
+        children: [
+          Container(
                   width: 80,
                   height: 80,
-                  decoration: BoxDecoration(
+            decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
-                    image: DecorationImage(
-                      image: NetworkImage(cartItem.product.imageUrl),
-                      fit: BoxFit.cover,
-                    ),
+              image: DecorationImage(
+                image: NetworkImage(cartItem.product.imageUrl),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  cartItem.product.name,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                    color: Color(0xFF1C170D),
                   ),
                 ),
-                SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        cartItem.product.name,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF1C170D),
-                        ),
-                      ),
                       SizedBox(height: 4),
-                      Text(
+                Text(
                         '\$${cartItem.product.price.toStringAsFixed(2)}',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 14,
                           fontWeight: FontWeight.w500,
                           color: Color(0xFF9AC49A),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
+              ],
+            ),
+          ),
                 Row(
                   children: [
                     IconButton(
@@ -388,10 +387,10 @@ class CartItemWidget extends StatelessWidget {
                         }
                       },
                     ),
-                    Text(
+          Text(
                       '${cartItem.quantity}',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 16,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

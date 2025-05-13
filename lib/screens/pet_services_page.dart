@@ -6,12 +6,15 @@ import '../models/pet_service.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../widgets/service_card.dart';
 import 'cart_page.dart';
+import '../utils/navigation_utils.dart';
 
 class PetServicesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: Color(0xFFDDEEDD),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -21,7 +24,7 @@ class PetServicesPage extends StatelessWidget {
             Text(
               'Pet Services',
               style: GoogleFonts.plusJakartaSans(
-                color: Color(0xFF515950),
+                color: theme.colorScheme.onSurface,
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
               ),
@@ -30,7 +33,7 @@ class PetServicesPage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart, color: Color(0xFF0D1C0D)),
+            icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onSurface),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => CartPage()),
@@ -38,7 +41,7 @@ class PetServicesPage extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: Icon(Icons.favorite_border_outlined, color: Color(0xFF4F964F)),
+            icon: Icon(Icons.favorite_border_outlined, color: theme.colorScheme.primary),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => WishlistPage()),
@@ -69,7 +72,10 @@ class PetServicesPage extends StatelessWidget {
           );
         },
       ),
-      bottomNavigationBar: BottomNavBar(currentRoute: '/services'),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: NavigationUtils.getIndexFromRoute('/services'),
+        onTap: (index) => NavigationUtils.handleNavigation(context, index),
+      ),
     );
   }
 }

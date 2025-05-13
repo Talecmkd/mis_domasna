@@ -1,12 +1,16 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../providers/user_provider.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/bottom_nav_bar.dart';
 import 'change_password_screen.dart';
 import 'shipping_address_screen.dart';
+import '../utils/navigation_utils.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -14,6 +18,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  File? _localImageFile;
+  final ImagePicker _picker = ImagePicker();
+
   @override
   void initState() {
     super.initState();
@@ -23,15 +30,110 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  Future<void> _requestCameraPermission() async {
+    final status = await Permission.camera.request();
+    if (status.isDenied) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Camera permission is required to take photos'),
+          action: SnackBarAction(
+            label: 'Settings',
+            onPressed: () => openAppSettings(),
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      if (source == ImageSource.camera) {
+        final status = await Permission.camera.status;
+        if (status.isDenied) {
+          await _requestCameraPermission();
+          return;
+        }
+      }
+
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 85,
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _localImageFile = File(pickedFile.path);
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to pick image: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _showImageSourceDialog() {
+    final theme = Theme.of(context);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: theme.cardColor,
+          title: Text(
+            'Select Image Source',
+            style: GoogleFonts.inter(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera_alt, color: theme.colorScheme.primary),
+                title: Text(
+                  'Take Photo',
+                  style: GoogleFonts.inter(color: theme.colorScheme.onSurface),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library, color: theme.colorScheme.primary),
+                title: Text(
+                  'Choose from Gallery',
+                  style: GoogleFonts.inter(color: theme.colorScheme.onSurface),
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickImage(ImageSource.gallery);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Color(0xFFF8FBF7),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFF8FBF7),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF0D1C0D)),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -39,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
           style: GoogleFonts.inter(
             fontSize: 16.9,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF596259),
+            color: theme.colorScheme.onSurface.withOpacity(0.8),
           ),
         ),
         centerTitle: true,
@@ -47,13 +149,20 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Consumer<UserProvider>(
         builder: (context, userProvider, child) {
           if (userProvider.isLoading) {
-            return Center(child: CircularProgressIndicator());
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
+              ),
+            );
           }
 
           final user = userProvider.userProfile;
           if (user == null) {
             return Center(
-              child: Text('Error loading profile'),
+              child: Text(
+                'Error loading profile',
+                style: TextStyle(color: theme.colorScheme.error),
+              ),
             );
           }
 
@@ -70,9 +179,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           image: DecorationImage(
-                            image: user.photoUrl != null
-                                ? NetworkImage(user.photoUrl!)
-                                : NetworkImage('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop'),
+                            image: _localImageFile != null
+                                ? FileImage(_localImageFile!) as ImageProvider
+                                : (user.photoUrl != null
+                                    ? NetworkImage(user.photoUrl!)
+                                    : NetworkImage('https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop')),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -81,12 +192,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         right: 0,
                         bottom: 0,
                         child: CircleAvatar(
-                          backgroundColor: Color(0xFF1AE51A),
+                          backgroundColor: theme.colorScheme.secondary,
                           child: IconButton(
-                            icon: Icon(Icons.camera_alt, color: Color(0xFF1C170D)),
-                            onPressed: () {
-                              // TODO: Implement profile picture upload
-                            },
+                            icon: Icon(Icons.camera_alt, color: theme.colorScheme.onSecondary),
+                            onPressed: _showImageSourceDialog,
                           ),
                         ),
                       ),
@@ -94,11 +203,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                _buildProfileItem(Icons.settings, "Settings"),
-                _buildProfileItem(Icons.person, user.name),
-                _buildProfileItem(Icons.email, user.email),
-                _buildProfileItem(Icons.phone, user.phoneNumber ?? 'Add phone number'),
+                _buildProfileItem(context, Icons.settings, "Settings"),
+                _buildProfileItem(context, Icons.person, user.name),
+                _buildProfileItem(context, Icons.email, user.email),
+                _buildProfileItem(context, Icons.phone, user.phoneNumber ?? 'Add phone number'),
                 _buildProfileItem(
+                  context,
                   Icons.lock,
                   'Password',
                   showArrow: true,
@@ -108,6 +218,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
                 _buildProfileItem(
+                  context,
                   Icons.location_on,
                   'Shipping Address',
                   showArrow: true,
@@ -132,17 +243,17 @@ class _ProfilePageState extends State<ProfilePage> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text('Error signing out: $e'),
-                            backgroundColor: Colors.red,
+                            backgroundColor: theme.colorScheme.error,
                           ),
                         );
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFFE7F3E8),
+                      backgroundColor: theme.colorScheme.surface,
                       minimumSize: Size(double.infinity, 38),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
-                        side: BorderSide(color: Color(0xFFEDF4ED)),
+                        side: BorderSide(color: theme.dividerColor),
                       ),
                     ),
                     child: Text(
@@ -150,7 +261,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: GoogleFonts.inter(
                         fontSize: 13.3,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF5D695D),
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -160,11 +271,15 @@ class _ProfilePageState extends State<ProfilePage> {
           );
         },
       ),
-      bottomNavigationBar: BottomNavBar(currentRoute: '/profile'),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: NavigationUtils.getIndexFromRoute('/profile'),
+        onTap: (index) => NavigationUtils.handleNavigation(context, index),
+      ),
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String text, {bool showArrow = false, VoidCallback? onTap}) {
+  Widget _buildProfileItem(BuildContext context, IconData icon, String text, {bool showArrow = false, VoidCallback? onTap}) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap ?? () {
         if (text == "Settings") {
@@ -180,10 +295,10 @@ class _ProfilePageState extends State<ProfilePage> {
               width: 38,
               height: 38,
               decoration: BoxDecoration(
-                color: Color(0xFFDDEEDD),
+                color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(7.25),
               ),
-              child: Icon(icon, color: Color(0xFF7D857D), size: 20),
+              child: Icon(icon, color: theme.colorScheme.primary, size: 20),
             ),
             SizedBox(width: 16),
             Expanded(
@@ -192,12 +307,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: GoogleFonts.inter(
                   fontSize: 14.6,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF7D857D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ),
             if (showArrow)
-              Icon(Icons.arrow_forward_ios, color: Color(0xFF7D857D), size: 18),
+              Icon(Icons.arrow_forward_ios, color: theme.colorScheme.onSurface.withOpacity(0.7), size: 18),
           ],
         ),
       ),

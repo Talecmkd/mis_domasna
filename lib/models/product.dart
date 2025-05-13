@@ -6,6 +6,7 @@ class Product {
   final String imageUrl;
   final String category;
   final bool isFeatured;
+  final double rating;
 
   Product({
     required this.id,
@@ -15,6 +16,7 @@ class Product {
     required this.imageUrl,
     required this.category,
     this.isFeatured = false,
+    this.rating = 0.0,
   });
 
   // Factory constructor to create a Product from a Map (useful for JSON parsing)
@@ -27,6 +29,7 @@ class Product {
       imageUrl: map['imageUrl'],
       category: map['category'],
       isFeatured: map['isFeatured'] ?? false,
+      rating: map['rating']?.toDouble() ?? 0.0,
     );
   }
 
@@ -40,6 +43,7 @@ class Product {
       'imageUrl': imageUrl,
       'category': category,
       'isFeatured': isFeatured,
+      'rating': rating,
     };
   }
 }
@@ -52,6 +56,7 @@ List<Product> sampleProducts = [
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTONPFnUBI4_6pdQhGktUYaMZ9NWI46-7caiw&s',
     category: 'Dog Food',
     isFeatured: true,
+    rating: 4.5,
   ),
   Product(
     id: '2',
@@ -61,6 +66,7 @@ List<Product> sampleProducts = [
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuz77kGow6RitKOOQVWu9PmBhukiX8YpirUg&s',
     category: 'Cat Toys',
     isFeatured: true,
+    rating: 4.0,
   ),
   Product(
     id: '3',
@@ -70,6 +76,7 @@ List<Product> sampleProducts = [
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ2bOMEgRym0gZw52v-bglo5hS0wUAyCreLcw&s',
     category: 'Bedding',
     isFeatured: true,
+    rating: 4.2,
   ),
   Product(
     id: '4',
@@ -79,6 +86,7 @@ List<Product> sampleProducts = [
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTFqV1whYhPd7mcwZoXU3pO9XXrQX1DKWtHIQ&s',
     category: 'Fish Supplies',
     isFeatured: true,
+    rating: 4.8,
   ),
   Product(
     id: '5',
@@ -87,6 +95,7 @@ List<Product> sampleProducts = [
     price: 49.99,
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKwiOc1gbd1yZdA5ypxNgSd5i5qaKBHS-OrQ&s',
     category: 'Bird Supplies',
+    rating: 4.0,
   ),
   Product(
     id: '6',
@@ -95,5 +104,6 @@ List<Product> sampleProducts = [
     price: 9.99,
     imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSzETpDQaTNI6gSEbDaPSZ1yjS3UnCjKgSPxA&s',
     category: 'Small Pet Supplies',
+    rating: 4.3,
   )
 ];

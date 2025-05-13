@@ -12,6 +12,8 @@ import '../widgets/featured_products_carousel.dart';
 import '../widgets/pet_services_section.dart';
 import '../widgets/popular_products_grid.dart';
 import 'cart_page.dart';
+import 'map_screen.dart';
+import '../utils/navigation_utils.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -21,6 +23,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final storeProvider = Provider.of<StoreProvider>(context);
     
     if (storeProvider.error != null) {
@@ -53,22 +56,22 @@ class _HomePageState extends State<HomePage> {
     final services = storeProvider.services;
 
     return Scaffold(
-      backgroundColor: Color(0xFFF7FCF7),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFF7FCF7),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         title: Text(
           'My Pet Shop',
           style: GoogleFonts.beVietnamPro(
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF0D1C0D),
+            color: theme.colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart, color: Color(0xFF0D1C0D)),
+            icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onSurface),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => CartPage()),
@@ -76,7 +79,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.favorite_border_outlined, color: Color(0xFF4F964F)),
+            icon: Icon(Icons.favorite_border_outlined, color: theme.colorScheme.primary),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => WishlistPage()),
@@ -96,21 +99,21 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 height: 60,
                 decoration: BoxDecoration(
-                  color: Color(0xFFE8F2E8),
+                  color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Icon(Icons.search, color: Color(0xFF4F964F)),
+                      child: Icon(Icons.search, color: theme.colorScheme.primary),
                     ),
                     Expanded(
                       child: Text(
                         'Search pet products, services...',
                         style: GoogleFonts.beVietnamPro(
                           fontSize: 16,
-                          color: Color(0xFF4F964F),
+                          color: theme.colorScheme.primary,
                         ),
                       ),
                     ),
@@ -134,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                 style: GoogleFonts.beVietnamPro(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF0D1C0D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ),
@@ -161,15 +164,20 @@ class _HomePageState extends State<HomePage> {
                 )
               else
                 PetServicesSection(services: services),
+            _buildMapButton(context),
           ],
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavBar(currentRoute: '/',)
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: NavigationUtils.getIndexFromRoute('/'),
+        onTap: (index) => NavigationUtils.handleNavigation(context, index),
+      ),
     );
   }
 
   Widget _buildNavItem(IconData icon, String label, bool isActive) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
         switch (label) {
@@ -195,7 +203,7 @@ class _HomePageState extends State<HomePage> {
         children: [
           Icon(
             icon,
-            color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+            color: isActive ? theme.colorScheme.onSurface : theme.colorScheme.primary,
             size: 24,
           ),
           Text(
@@ -203,7 +211,7 @@ class _HomePageState extends State<HomePage> {
             style: GoogleFonts.beVietnamPro(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+              color: isActive ? theme.colorScheme.onSurface : theme.colorScheme.primary,
             ),
           ),
         ],
@@ -211,5 +219,39 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildMapButton(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: ElevatedButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MapScreen()),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: theme.colorScheme.secondary,
+          padding: EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.location_on, color: theme.colorScheme.onSecondary),
+            SizedBox(width: 8),
+            Text(
+              'Find Nearby Pet Stores',
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 

@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../models/product.dart';
 import '../models/cart.dart';
+import '../providers/product_provider.dart';
+import '../widgets/star_rating.dart';
 import 'cart_page.dart';
 
 class ProductDetailPage extends StatelessWidget {
@@ -13,14 +15,15 @@ class ProductDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context, listen: false);
+    final theme = Theme.of(context);
     
     return Scaffold(
-      backgroundColor: Color(0xFFE8F2E8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFE8F2E8),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF1C170D)),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -28,14 +31,14 @@ class ProductDetailPage extends StatelessWidget {
           style: GoogleFonts.plusJakartaSans(
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF1C170D),
+            color: theme.colorScheme.onSurface,
           ),
         ),
         actions: [
           Stack(
             children: [
               IconButton(
-                icon: Icon(Icons.shopping_cart, color: Color(0xFF1C170D)),
+                icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onSurface),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -50,7 +53,7 @@ class ProductDetailPage extends StatelessWidget {
                   child: Container(
                     padding: EdgeInsets.all(2),
                     decoration: BoxDecoration(
-                      color: Color(0xFF1AE51A),
+                      color: theme.colorScheme.primary,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     constraints: BoxConstraints(
@@ -60,7 +63,7 @@ class ProductDetailPage extends StatelessWidget {
                     child: Text(
                       '${cart.itemCount}',
                       style: TextStyle(
-                        color: Color(0xFF1C170D),
+                        color: theme.colorScheme.onPrimary,
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
                       ),
@@ -79,7 +82,7 @@ class ProductDetailPage extends StatelessWidget {
             Container(
               height: 260,
               width: double.infinity,
-              color: Colors.white,
+              color: theme.cardColor,
               child: Image.network(
                 product.imageUrl,
                 fit: BoxFit.contain,
@@ -92,8 +95,38 @@ class ProductDetailPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface,
                 ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: [
+                  StarRating(
+                    rating: product.rating,
+                    size: 24,
+                    isInteractive: true,
+                    onRatingChanged: (newRating) {
+                      final productProvider = Provider.of<ProductProvider>(context, listen: false);
+                      productProvider.updateProductRating(product.id, newRating);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Rating updated to ${newRating.toStringAsFixed(1)}'),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    },
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    product.rating.toStringAsFixed(1),
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 16,
+                      color: theme.colorScheme.onSurface.withOpacity(0.8),
+                    ),
+                  ),
+                ],
               ),
             ),
             Padding(
@@ -103,7 +136,7 @@ class ProductDetailPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 28,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ),
@@ -114,7 +147,7 @@ class ProductDetailPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ),
@@ -125,7 +158,7 @@ class ProductDetailPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface.withOpacity(0.8),
                 ),
               ),
             ),
@@ -136,7 +169,7 @@ class ProductDetailPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xFFA1824A),
+                  color: theme.colorScheme.primary,
                 ),
               ),
             ),
@@ -160,7 +193,7 @@ class ProductDetailPage extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF1AE51A),
+                  backgroundColor: theme.colorScheme.primary,
                   minimumSize: Size(double.infinity, 48),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
@@ -171,7 +204,7 @@ class ProductDetailPage extends StatelessWidget {
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF1C170D),
+                    color: theme.colorScheme.onPrimary,
                   ),
                 ),
               ),

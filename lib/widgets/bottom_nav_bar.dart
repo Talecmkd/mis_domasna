@@ -3,48 +3,51 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class BottomNavBar extends StatelessWidget {
-  final String currentRoute;
+  final int currentIndex;
+  final Function(int) onTap;
 
-  const BottomNavBar({Key? key, required this.currentRoute}) : super(key: key);
+  const BottomNavBar({required this.currentIndex, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 75,
       decoration: BoxDecoration(
-        color: Color(0xFFF7FCF7),
-        border: Border(top: BorderSide(color: Color(0xFFE8F2E8))),
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _buildNavItem(context, Icons.home, 'Home', currentRoute == '/'),
-            _buildNavItem(context, Icons.search, 'Categories', currentRoute == '/categories'),
-            _buildNavItem(context, Icons.card_giftcard, 'Services', currentRoute == '/services'),
-            _buildNavItem(context, Icons.receipt, 'Orders', currentRoute == '/orders'),
-            _buildNavItem(context, Icons.person, 'Profile', currentRoute == '/profile'),
-          ],
+        color: Theme.of(context).scaffoldBackgroundColor,
+        border: Border(
+          top: BorderSide(
+            color: Theme.of(context).dividerColor,
+          ),
         ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildNavItem(context, Icons.home, 'Home', 0),
+          _buildNavItem(context, Icons.search, 'Categories', 1),
+          _buildNavItem(context, Icons.card_giftcard, 'Services', 2),
+          _buildNavItem(context, Icons.receipt, 'Orders', 3),
+          _buildNavItem(context, Icons.person, 'Profile', 4),
+        ],
       ),
     );
   }
 
-  Widget _buildNavItem(BuildContext context, IconData icon, String label, bool isActive) {
+  Widget _buildNavItem(BuildContext context, IconData icon, String label, int index) {
+    final isActive = currentIndex == index;
+    final color = isActive 
+      ? Theme.of(context).colorScheme.primary
+      : Theme.of(context).colorScheme.onSurface.withOpacity(0.7);
+
     return GestureDetector(
-      onTap: () {
-        if (label == 'Home') {
-          Navigator.pushReplacementNamed(context, '/');
-        } else {
-          Navigator.pushNamed(context, '/${label.toLowerCase()}');
-        }
-      },
+      onTap: () => onTap(index),
+      behavior: HitTestBehavior.opaque,
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             icon,
-            color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+            color: color,
             size: 24,
           ),
           Text(
@@ -52,7 +55,7 @@ class BottomNavBar extends StatelessWidget {
             style: GoogleFonts.beVietnamPro(
               fontSize: 12,
               fontWeight: FontWeight.w500,
-              color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+              color: color,
             ),
           ),
         ],

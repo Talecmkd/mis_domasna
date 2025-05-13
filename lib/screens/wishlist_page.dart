@@ -7,19 +7,21 @@ import '../providers/store_provider.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/bottom_nav_bar.dart';
 import 'product_detail_page.dart';
+import '../utils/navigation_utils.dart';
 
 class WishlistPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Color(0xFFF8FBF7),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
           'Wishlist',
           style: GoogleFonts.inter(
-            color: Color(0xFF384238),
+            color: theme.colorScheme.onSurface,
             fontSize: 27,
             fontWeight: FontWeight.w600,
           ),
@@ -31,16 +33,16 @@ class WishlistPage extends StatelessWidget {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+        children: [
                   Text('Error: ${storeProvider.error}'),
                   ElevatedButton(
                     onPressed: () => storeProvider.initializeStore(),
                     child: Text('Retry'),
-                  ),
-                ],
-              ),
-            );
-          }
+          ),
+        ],
+      ),
+    );
+  }
 
           if (storeProvider.isLoading) {
             return Center(child: CircularProgressIndicator());
@@ -50,54 +52,54 @@ class WishlistPage extends StatelessWidget {
 
           if (wishlistProducts.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                   Icon(
                     Icons.favorite_border,
                     size: 64,
-                    color: Color(0xFF9AC49A),
-                  ),
+                    color: theme.colorScheme.primary,
+                ),
                   SizedBox(height: 16),
-                  Text(
+                Text(
                     'Your wishlist is empty',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF1C170D),
-                    ),
+                    fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
                   ),
+                ),
                   SizedBox(height: 8),
                   Text(
                     'Add items you love to your wishlist',
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
-                      color: Color(0xFF6C736B),
-                    ),
-                  ),
+                      color: theme.colorScheme.onSurface.withOpacity(0.6),
+            ),
+          ),
                   SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF1AE51A),
+              style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.primary,
                       padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
-                      shape: RoundedRectangleBorder(
+                shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
-                      ),
-                    ),
-                    child: Text(
+                ),
+              ),
+              child: Text(
                       'Start Shopping',
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF1C170D),
-                      ),
-                    ),
-                  ),
-                ],
+                  fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onPrimary,
               ),
-            );
-          }
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
           return ListView.builder(
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -110,7 +112,10 @@ class WishlistPage extends StatelessWidget {
           );
         },
       ),
-      bottomNavigationBar: BottomNavBar(currentRoute: '/wishlist'),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: NavigationUtils.getIndexFromRoute('/'),
+        onTap: (index) => NavigationUtils.handleNavigation(context, index),
+      ),
     );
   }
 
@@ -119,14 +124,15 @@ class WishlistPage extends StatelessWidget {
     Product product,
     StoreProvider storeProvider,
   ) {
+    final theme = Theme.of(context);
     return Dismissible(
       key: ValueKey(product.id),
       direction: DismissDirection.endToStart,
       background: Container(
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20),
-        color: Colors.red.shade100,
-        child: Icon(Icons.delete, color: Colors.red),
+        color: theme.colorScheme.error.withOpacity(0.1),
+        child: Icon(Icons.delete, color: theme.colorScheme.error),
       ),
       confirmDismiss: (direction) {
         return showDialog(
@@ -166,14 +172,15 @@ class WishlistPage extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
+        color: theme.cardColor,
         child: InkWell(
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ProductDetailPage(product: product),
-              ),
-            );
+      ),
+    );
           },
           child: Padding(
             padding: EdgeInsets.all(12),
@@ -194,25 +201,25 @@ class WishlistPage extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+      children: [
                       Text(
                         product.name,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF1C170D),
+                          color: theme.colorScheme.onSurface,
                         ),
                       ),
                       SizedBox(height: 4),
-                      Text(
+        Text(
                         '\$${product.price.toStringAsFixed(2)}',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF9AC49A),
-                        ),
-                      ),
-                    ],
+            fontWeight: FontWeight.w500,
+                          color: theme.colorScheme.primary,
+          ),
+        ),
+      ],
                   ),
                 ),
                 IconButton(

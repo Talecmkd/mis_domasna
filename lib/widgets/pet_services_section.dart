@@ -46,7 +46,7 @@ class PetServicesSection extends StatelessWidget {
         SizedBox(
           height: 250,
           child: ListView.builder(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: EdgeInsets.symmetric(horizontal: 16),
             scrollDirection: Axis.horizontal,
             itemCount: services.length,
             itemBuilder: (context, index) {

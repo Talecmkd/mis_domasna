@@ -61,19 +61,21 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: Color(0xFFE8F2E8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFE8F2E8),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF1C170D)),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           'Book ${widget.service.name}',
           style: GoogleFonts.plusJakartaSans(
-            color: Color(0xFF1C170D),
+            color: theme.colorScheme.onSurface,
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
@@ -84,7 +86,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              color: Colors.white,
+              color: theme.cardColor,
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -94,7 +96,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1C170D),
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   SizedBox(height: 12),
@@ -103,7 +105,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                     child: Container(
                       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFFE8F2E8)),
+                        border: Border.all(color: theme.dividerColor),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -116,12 +118,12 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 14,
                               color: selectedDate == null
-                                  ? Color(0xFF6C736B)
-                                  : Color(0xFF1C170D),
+                                  ? theme.colorScheme.onSurface.withOpacity(0.6)
+                                  : theme.colorScheme.onSurface,
                             ),
                           ),
                           Icon(Icons.calendar_today,
-                              color: Color(0xFF4F964F), size: 20),
+                              color: theme.colorScheme.primary, size: 20),
                         ],
                       ),
                     ),
@@ -132,7 +134,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
             if (selectedDate != null) ...[
               SizedBox(height: 16),
               Container(
-                color: Colors.white,
+                color: theme.cardColor,
                 padding: EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +144,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF1C170D),
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     SizedBox(height: 12),
@@ -171,12 +173,12 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: isSelected
-                                  ? Color(0xFF4F964F)
+                                  ? theme.colorScheme.primary
                                   : Colors.transparent,
                               border: Border.all(
                                 color: isSelected
-                                    ? Color(0xFF4F964F)
-                                    : Color(0xFFE8F2E8),
+                                    ? theme.colorScheme.primary
+                                    : theme.dividerColor,
                               ),
                               borderRadius: BorderRadius.circular(8),
                             ),
@@ -186,8 +188,8 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 14,
                                 color: isSelected
-                                    ? Colors.white
-                                    : Color(0xFF1C170D),
+                                    ? theme.colorScheme.onPrimary
+                                    : theme.colorScheme.onSurface,
                               ),
                             ),
                           ),
@@ -200,7 +202,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
             ],
             SizedBox(height: 16),
             Container(
-              color: Colors.white,
+              color: theme.cardColor,
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,7 +212,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1C170D),
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   SizedBox(height: 12),
@@ -220,19 +222,19 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                     decoration: InputDecoration(
                       hintText: 'Add any special requirements or notes...',
                       hintStyle: GoogleFonts.plusJakartaSans(
-                        color: Color(0xFF6C736B),
+                        color: theme.colorScheme.onSurface.withOpacity(0.6),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Color(0xFFE8F2E8)),
+                        borderSide: BorderSide(color: theme.dividerColor),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Color(0xFFE8F2E8)),
+                        borderSide: BorderSide(color: theme.dividerColor),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Color(0xFF4F964F)),
+                        borderSide: BorderSide(color: theme.colorScheme.primary),
                       ),
                     ),
                   ),
@@ -241,7 +243,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
             ),
             SizedBox(height: 16),
             Container(
-              color: Colors.white,
+              color: theme.cardColor,
               padding: EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,15 +253,16 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF1C170D),
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                   SizedBox(height: 12),
-                  _buildSummaryRow('Service', widget.service.name),
+                  _buildSummaryRow(context, 'Service', widget.service.name),
                   SizedBox(height: 8),
-                  _buildSummaryRow('Duration', widget.service.duration),
+                  _buildSummaryRow(context, 'Duration', widget.service.duration),
                   SizedBox(height: 8),
                   _buildSummaryRow(
+                    context,
                     'Price',
                     '\$${widget.service.price.toStringAsFixed(2)}',
                   ),
@@ -271,12 +274,11 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
       ),
       bottomNavigationBar: Container(
         padding: EdgeInsets.all(16),
-        color: Colors.white,
+        color: theme.cardColor,
         child: SafeArea(
           child: ElevatedButton(
             onPressed: (selectedDate != null && selectedTime != null)
                 ? () {
-                    // TODO: Implement booking confirmation
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
@@ -293,9 +295,8 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                           ),
                           TextButton(
                             onPressed: () {
-                              // TODO: Save booking to Firebase
-                              Navigator.pop(context); // Close dialog
-                              Navigator.pop(context); // Return to service detail
+                              Navigator.pop(context);
+                              Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Booking confirmed successfully!'),
@@ -311,8 +312,8 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                   }
                 : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xFF1AE51A),
-              disabledBackgroundColor: Color(0xFFE8F2E8),
+              backgroundColor: theme.colorScheme.secondary,
+              disabledBackgroundColor: theme.colorScheme.surface.withOpacity(0.5),
               minimumSize: Size(double.infinity, 48),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(24),
@@ -323,7 +324,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 16,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF1C170D),
+                color: theme.colorScheme.onSecondary,
               ),
             ),
           ),
@@ -332,7 +333,8 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
     );
   }
 
-  Widget _buildSummaryRow(String label, String value) {
+  Widget _buildSummaryRow(BuildContext context, String label, String value) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -340,7 +342,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
           label,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 14,
-            color: Color(0xFF6C736B),
+            color: theme.colorScheme.onSurface.withOpacity(0.7),
           ),
         ),
         Text(
@@ -348,7 +350,7 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
           style: GoogleFonts.plusJakartaSans(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF1C170D),
+            color: theme.colorScheme.onSurface,
           ),
         ),
       ],

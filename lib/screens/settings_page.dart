@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import '../providers/theme_provider.dart';
 import '../widgets/app_drawer.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -10,7 +12,6 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   bool _notificationsEnabled = true;
   String _selectedLanguage = 'English';
-  bool _darkModeEnabled = false;
   String _selectedPaymentMethod = '';
   Map<String, String> _cardInfo = {};
 
@@ -23,13 +24,15 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    
     return Scaffold(
-      backgroundColor: Color(0xFFF7FCF7),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFF7FCF7),
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF0D1C0D)),
+          icon: Icon(Icons.arrow_back, color: Theme.of(context).iconTheme.color),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
@@ -37,7 +40,7 @@ class _SettingsPageState extends State<SettingsPage> {
           style: GoogleFonts.inter(
             fontSize: 16.9,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF5F685F),
+            color: Theme.of(context).appBarTheme.titleTextStyle?.color,
           ),
         ),
         centerTitle: true,
@@ -53,8 +56,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 _buildSectionTitle('Preferences'),
                 _buildSwitchItem(
                   'Dark Mode',
-                  _darkModeEnabled,
-                      (value) => setState(() => _darkModeEnabled = value),
+                  themeProvider.isDarkMode,
+                  (value) => themeProvider.toggleTheme(),
                 ),
                 _buildListItem('Language',
                   subtitle: 'English',
@@ -89,7 +92,7 @@ class _SettingsPageState extends State<SettingsPage> {
         style: GoogleFonts.inter(
           fontSize: 16.9,
           fontWeight: FontWeight.w600,
-          color: Color(0xFF606860),
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
     );
@@ -107,7 +110,7 @@ class _SettingsPageState extends State<SettingsPage> {
         style: GoogleFonts.inter(
           fontSize: 14.8,
           fontWeight: FontWeight.w600,
-          color: Color(0xFF7B827B),
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
       subtitle: subtitle != null ? Text(
@@ -115,12 +118,12 @@ class _SettingsPageState extends State<SettingsPage> {
         style: GoogleFonts.inter(
           fontSize: 14.2,
           fontWeight: FontWeight.w600,
-          color: Color(0xFF828881),
+          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
         ),
       ) : null,
       trailing: trailing != null ? Icon(
         trailing,
-        color: Color(0xFF0D1C0D),
+        color: Theme.of(context).colorScheme.onSurface,
         size: 18,
       ) : null,
       onTap: onTap ?? () {
@@ -139,13 +142,13 @@ class _SettingsPageState extends State<SettingsPage> {
         title,
         style: GoogleFonts.inter(
           fontSize: 14.8,
-          fontWeight: FontWeight.w600,
-          color: Color(0xFF767D76),
+          fontWeight: FontWeight.w500,
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
       value: value,
       onChanged: onChanged,
-      activeColor: Color(0xFF4F964F),
+      activeColor: Theme.of(context).colorScheme.primary,
     );
   }
 
@@ -153,8 +156,12 @@ class _SettingsPageState extends State<SettingsPage> {
     return Container(
       height: 75,
       decoration: BoxDecoration(
-        color: Color(0xFFF7FCF7),
-        border: Border(top: BorderSide(color: Color(0xFFE8F2E8))),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        border: Border(
+          top: BorderSide(
+            color: Theme.of(context).dividerColor,
+          ),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -170,12 +177,16 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget _buildNavItem(IconData icon, String label, bool isActive) {
+    final color = isActive 
+      ? Theme.of(context).colorScheme.primary
+      : Theme.of(context).colorScheme.onSurface.withOpacity(0.7);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
           icon,
-          color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+          color: color,
           size: 24,
         ),
         Text(
@@ -183,7 +194,7 @@ class _SettingsPageState extends State<SettingsPage> {
           style: GoogleFonts.beVietnamPro(
             fontSize: 12,
             fontWeight: FontWeight.w500,
-            color: isActive ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+            color: color,
           ),
         ),
       ],

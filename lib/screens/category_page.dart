@@ -6,6 +6,7 @@ import '../models/product.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/bottom_nav_bar.dart';
 import 'cart_page.dart';
+import '../utils/navigation_utils.dart';
 
 class CategoryPage extends StatefulWidget {
   @override
@@ -25,24 +26,25 @@ class _CategoryPageState extends State<CategoryPage> {
   Widget build(BuildContext context) {
     List<String> allCategories = sampleProducts.map((p) => p.category).toSet().toList();
     List<String> filteredCategories = filterCategories(allCategories, selectedTab);
+    final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: Color(0xFFF7FCF7),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFF7FCF7),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         title: Text(
           'Pet Supplies',
           style: GoogleFonts.beVietnamPro(
             fontSize: 18,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF0D1C0D),
+            color: theme.colorScheme.onSurface,
           ),
         ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart, color: Color(0xFF0D1C0D)),
+            icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onSurface),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => CartPage()),
@@ -50,7 +52,7 @@ class _CategoryPageState extends State<CategoryPage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.favorite_border_outlined, color: Color(0xFF4F964F)),
+            icon: Icon(Icons.favorite_border_outlined, color: theme.colorScheme.primary),
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(builder: (context) => WishlistPage()),
@@ -76,7 +78,7 @@ class _CategoryPageState extends State<CategoryPage> {
               ],
             ),
           ),
-          Divider(height: 1, color: Color(0xFFD1E8D1)),
+          Divider(height: 1, color: theme.dividerColor),
           Expanded(
             child: ListView.builder(
               padding: EdgeInsets.all(16),
@@ -88,46 +90,54 @@ class _CategoryPageState extends State<CategoryPage> {
           ),
         ],
       ),
-        bottomNavigationBar: BottomNavBar(currentRoute: '/categories',)
-
-    );
-  }
-
-  Widget _buildCategoryTab(String label, bool isSelected) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          selectedTab = selectedTab == label ? null : label;
-        });
-      },
-      child: Container(
-        margin: EdgeInsets.only(right: 32),
-        height: 53,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              label,
-              style: GoogleFonts.beVietnamPro(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: isSelected ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
-              ),
-            ),
-            SizedBox(height: 13),
-            if (isSelected)
-              Container(
-                height: 3,
-                width: 29,
-                color: Color(0xFF0D1C0D),
-              ),
-          ],
-        ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: NavigationUtils.getIndexFromRoute('/categories'),
+        onTap: (index) => NavigationUtils.handleNavigation(context, index),
       ),
     );
   }
 
+  Widget _buildCategoryTab(String label, bool isSelected) {
+    return Builder(
+      builder: (context) {
+        final theme = Theme.of(context);
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedTab = selectedTab == label ? null : label;
+            });
+          },
+          child: Container(
+            margin: EdgeInsets.only(right: 32),
+            height: 53,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  label,
+                  style: GoogleFonts.beVietnamPro(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: isSelected ? theme.colorScheme.onSurface : theme.colorScheme.primary,
+                  ),
+                ),
+                SizedBox(height: 13),
+                if (isSelected)
+                  Container(
+                    height: 3,
+                    width: 29,
+                    color: theme.colorScheme.onSurface,
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildCategoryCard(BuildContext context, String category) {
+    final theme = Theme.of(context);
     final Map<String, String> categoryImages = {
       'Dog Food': 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?q=80&w=1000&auto=format&fit=crop',
       'Cat Toys': 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?q=80&w=1000&auto=format&fit=crop',
@@ -142,6 +152,7 @@ class _CategoryPageState extends State<CategoryPage> {
       margin: EdgeInsets.only(bottom: 16),
       child: Card(
         elevation: 0,
+        color: theme.cardColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -186,7 +197,7 @@ class _CategoryPageState extends State<CategoryPage> {
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF0D1C0D),
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     SizedBox(height: 4),
@@ -199,7 +210,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             style: GoogleFonts.beVietnamPro(
                               fontSize: 13,
                               fontWeight: FontWeight.w400,
-                              color: Color(0xFF4F964F),
+                              color: theme.colorScheme.primary,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -208,7 +219,7 @@ class _CategoryPageState extends State<CategoryPage> {
                         ElevatedButton(
                           onPressed: () {},
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF1AE61A),
+                            backgroundColor: theme.colorScheme.primary,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
@@ -220,7 +231,7 @@ class _CategoryPageState extends State<CategoryPage> {
                             style: GoogleFonts.beVietnamPro(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFF0D1C0D),
+                              color: theme.colorScheme.onPrimary,
                             ),
                           ),
                         ),

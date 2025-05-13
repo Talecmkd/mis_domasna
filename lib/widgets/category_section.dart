@@ -15,6 +15,7 @@ class CategorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     List<String> categories = products.map((p) => p.category).toSet().toList();
 
     return Container(
@@ -43,7 +44,7 @@ class CategorySection extends StatelessWidget {
                     style: GoogleFonts.beVietnamPro(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: isSelected ? Color(0xFF0D1C0D) : Color(0xFF4F964F),
+                      color: isSelected ? theme.colorScheme.onSurface : theme.colorScheme.primary,
                     ),
                   ),
                   SizedBox(height: 13),
@@ -51,7 +52,7 @@ class CategorySection extends StatelessWidget {
                     Container(
                       height: 3,
                       width: 29,
-                      color: Color(0xFF0D1C0D),
+                      color: theme.colorScheme.onSurface,
                     ),
                 ],
               ),

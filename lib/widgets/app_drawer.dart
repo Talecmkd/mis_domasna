@@ -1,114 +1,118 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../screens/map_screen.dart';
 
 class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Color(0xFFF7FCF7),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       child: ListView(
         padding: EdgeInsets.zero,
-        children: <Widget>[
-          _buildDrawerHeader(),
-          SizedBox(height: 16),
+        children: [
+          _buildDrawerHeader(context),
           _buildDrawerItem(
-            icon: Icons.person,
-            text: 'My Profile',
-            onTap: () => Navigator.pushNamed(context, '/profile'),
-          ),
-          _buildDrawerItem(
+            context,
             icon: Icons.home,
-            text: 'Home',
+            title: 'Home',
             onTap: () => Navigator.pushReplacementNamed(context, '/'),
           ),
           _buildDrawerItem(
+            context,
             icon: Icons.category,
-            text: 'Shop by Category',
+            title: 'Categories',
             onTap: () => Navigator.pushNamed(context, '/categories'),
           ),
           _buildDrawerItem(
+            context,
             icon: Icons.pets,
-            text: 'Pet Services',
+            title: 'Pet Services',
             onTap: () => Navigator.pushNamed(context, '/services'),
-          ),
-          _buildDrawerItem(
-            icon: Icons.shopping_cart,
-            text: 'My Orders',
-            onTap: () => Navigator.pushNamed(context, '/orders'),
-          ),
-          _buildDrawerItem(
-            icon: Icons.favorite,
-            text: 'Wishlist',
-            onTap: () => Navigator.pushNamed(context, '/wishlist'),
           ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(color: Color(0xFFE8F2E8), thickness: 1),
+            child: Divider(color: Theme.of(context).dividerColor, thickness: 1),
           ),
           _buildDrawerItem(
-            icon: Icons.help_outline,
-            text: 'Help & Support',
+            context,
+            icon: Icons.shopping_cart,
+            title: 'My Cart',
+            onTap: () => Navigator.pushNamed(context, '/cart'),
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.favorite,
+            title: 'Wishlist',
+            onTap: () => Navigator.pushNamed(context, '/wishlist'),
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.receipt,
+            title: 'Orders',
+            onTap: () => Navigator.pushNamed(context, '/orders'),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Divider(color: Theme.of(context).dividerColor, thickness: 1),
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.settings,
+            title: 'Settings',
+            onTap: () => Navigator.pushNamed(context, '/settings'),
+          ),
+          _buildDrawerItem(
+            context,
+            icon: Icons.help,
+            title: 'Help & Support',
             onTap: () => Navigator.pushNamed(context, '/support'),
           ),
           _buildDrawerItem(
-            icon: Icons.settings,
-            text: 'Settings',
-            onTap: () => Navigator.pushNamed(context, '/settings'),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(color: Color(0xFFE8F2E8), thickness: 1),
-          ),
-          _buildDrawerItem(
-            icon: Icons.exit_to_app,
-            text: 'Sign Out',
-            onTap: () {
-              // TODO: Implement sign out logic
-              print('Sign out tapped');
-            },
+            context,
+            icon: Icons.logout,
+            title: 'Sign Out',
             isSignOut: true,
+            onTap: () {
+              // TODO: Implement sign out
+              Navigator.pop(context);
+            },
           ),
         ],
       ),
     );
   }
 
-  Widget _buildDrawerHeader() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(16, 60, 16, 16),
+  Widget _buildDrawerHeader(BuildContext context) {
+    return DrawerHeader(
       decoration: BoxDecoration(
-        color: Color(0xFFE8F2E8),
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           CircleAvatar(
-            radius: 32,
-            backgroundColor: Color(0xFF4F964F),
-            child: Text(
-              'MT',
-              style: GoogleFonts.inter(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w600,
-              ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            radius: 30,
+            child: Icon(
+              Icons.person,
+              size: 30,
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
-          SizedBox(height: 12),
+          SizedBox(height: 10),
           Text(
-            "Mihail Talev",
+            'John Doe',
             style: GoogleFonts.inter(
-              fontSize: 16,
+              fontSize: 18,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF0D1C0D),
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
-          SizedBox(height: 4),
           Text(
-            "mihail.talev@hotmail.com",
+            'john.doe@example.com',
             style: GoogleFonts.inter(
               fontSize: 14,
-              color: Color(0xFF4F964F),
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
             ),
           ),
         ],
@@ -116,28 +120,32 @@ class AppDrawer extends StatelessWidget {
     );
   }
 
-  Widget _buildDrawerItem({
+  Widget _buildDrawerItem(
+    BuildContext context, {
     required IconData icon,
-    required String text,
-    required GestureTapCallback onTap,
+    required String title,
+    required VoidCallback onTap,
     bool isSignOut = false,
   }) {
+    final color = isSignOut
+        ? Theme.of(context).colorScheme.error
+        : Theme.of(context).colorScheme.onSurface;
+
     return ListTile(
       leading: Icon(
         icon,
-        color: isSignOut ? Color(0xFF4F964F) : Color(0xFF0D1C0D),
-        size: 24,
+        color: color,
+        size: 22,
       ),
       title: Text(
-        text,
+        title,
         style: GoogleFonts.inter(
           fontSize: 14,
           fontWeight: FontWeight.w500,
-          color: isSignOut ? Color(0xFF4F964F) : Color(0xFF0D1C0D),
+          color: color,
         ),
       ),
       onTap: onTap,
-      contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
     );
   }
 }

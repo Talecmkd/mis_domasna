@@ -10,26 +10,28 @@ class ServiceDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Scaffold(
-      backgroundColor: Color(0xFFE8F2E8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Color(0xFFE8F2E8),
+        backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Color(0xFF1C170D)),
+          icon: Icon(Icons.arrow_back, color: theme.colorScheme.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(
           service.name,
           style: GoogleFonts.plusJakartaSans(
-            color: Color(0xFF1C170D),
+            color: theme.colorScheme.onSurface,
             fontSize: 18,
             fontWeight: FontWeight.w700,
           ),
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart, color: Color(0xFF1C170D)),
+            icon: Icon(Icons.shopping_cart, color: theme.colorScheme.onSurface),
             onPressed: () {},
           ),
         ],
@@ -46,10 +48,10 @@ class ServiceDetailPage extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
-                    color: Colors.grey[200],
+                    color: theme.colorScheme.surface,
                     child: Icon(
                       Icons.error_outline,
-                      color: Colors.grey[400],
+                      color: theme.colorScheme.onSurface.withOpacity(0.4),
                     ),
                   );
                 },
@@ -62,7 +64,7 @@ class ServiceDetailPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ),
@@ -73,7 +75,7 @@ class ServiceDetailPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ),
@@ -84,7 +86,7 @@ class ServiceDetailPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ),
@@ -95,7 +97,7 @@ class ServiceDetailPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 16,
                   fontWeight: FontWeight.w400,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ),
@@ -106,13 +108,13 @@ class ServiceDetailPage extends StatelessWidget {
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 22,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF1C170D),
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ),
-            _buildExpectationItem('Professional and experienced staff'),
-            _buildExpectationItem('High-quality equipment'),
-            _buildExpectationItem('Safe and pet-friendly environment'),
+            _buildExpectationItem(context, 'Professional and experienced staff'),
+            _buildExpectationItem(context, 'High-quality equipment'),
+            _buildExpectationItem(context, 'Safe and pet-friendly environment'),
           ],
         ),
       ),
@@ -128,7 +130,7 @@ class ServiceDetailPage extends StatelessWidget {
             );
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF1AE51A),
+            backgroundColor: theme.colorScheme.secondary,
             minimumSize: Size(double.infinity, 48),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(24),
@@ -139,7 +141,7 @@ class ServiceDetailPage extends StatelessWidget {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1C170D),
+              color: theme.colorScheme.onSecondary,
             ),
           ),
         ),
@@ -147,7 +149,8 @@ class ServiceDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildExpectationItem(String text) {
+  Widget _buildExpectationItem(BuildContext context, String text) {
+    final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -156,12 +159,12 @@ class ServiceDetailPage extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: Color(0xFFF5F0E6),
+              color: theme.colorScheme.surface,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Icon(
               Icons.check,
-              color: Color(0xFF1C170D),
+              color: theme.colorScheme.onSurface,
             ),
           ),
           SizedBox(width: 16),
@@ -170,7 +173,7 @@ class ServiceDetailPage extends StatelessWidget {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 16,
               fontWeight: FontWeight.w400,
-              color: Color(0xFF1C170D),
+              color: theme.colorScheme.onSurface,
             ),
           ),
         ],

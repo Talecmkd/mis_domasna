@@ -16,6 +16,8 @@ class ServiceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Container(
       width: isHorizontal ? 200 : null,
       margin: EdgeInsets.only(right: isHorizontal ? 16 : 0),
@@ -24,7 +26,7 @@ class ServiceCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        color: Colors.white,
+        color: theme.cardColor,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(12),
@@ -41,10 +43,10 @@ class ServiceCard extends StatelessWidget {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
-                        color: Colors.grey[200],
+                        color: theme.colorScheme.surface,
                         child: Icon(
                           Icons.error_outline,
-                          color: Colors.grey[400],
+                          color: theme.colorScheme.onSurface.withOpacity(0.4),
                         ),
                       );
                     },
@@ -61,7 +63,7 @@ class ServiceCard extends StatelessWidget {
                         Icon(
                           service.icon,
                           size: 16,
-                          color: Color(0xFF4F964F),
+                          color: theme.colorScheme.primary,
                         ),
                         SizedBox(width: 8),
                         Expanded(
@@ -70,7 +72,7 @@ class ServiceCard extends StatelessWidget {
                             style: GoogleFonts.beVietnamPro(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF0D1C0D),
+                              color: theme.colorScheme.onSurface,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -83,7 +85,7 @@ class ServiceCard extends StatelessWidget {
                       service.description,
                       style: GoogleFonts.beVietnamPro(
                         fontSize: 12,
-                        color: Color(0xFF4F964F),
+                        color: theme.colorScheme.primary,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -97,20 +99,20 @@ class ServiceCard extends StatelessWidget {
                           style: GoogleFonts.beVietnamPro(
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
-                            color: Color(0xFF0D1C0D),
+                            color: theme.colorScheme.onSurface,
                           ),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Color(0xFFE8F3E8),
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
                             service.duration,
                             style: GoogleFonts.beVietnamPro(
                               fontSize: 12,
-                              color: Color(0xFF4F964F),
+                              color: theme.colorScheme.primary,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
