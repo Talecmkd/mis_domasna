@@ -76,7 +76,11 @@ class MyApp extends StatelessWidget {
           builder: (context, themeProvider, child) {
             return MultiProvider(
               providers: [
-                ChangeNotifierProvider(create: (_) => ProductProvider()),
+                ChangeNotifierProvider(create: (ctx) {
+                  final productProvider = ProductProvider();
+                  productProvider.initializeProducts();
+                  return productProvider;
+                }),
                 ChangeNotifierProvider(create: (_) => Cart()),
               ],
               child: MaterialApp(

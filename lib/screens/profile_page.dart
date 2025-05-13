@@ -10,6 +10,7 @@ import '../widgets/app_drawer.dart';
 import '../widgets/bottom_nav_bar.dart';
 import 'change_password_screen.dart';
 import 'shipping_address_screen.dart';
+import 'pet_age_calculator_screen.dart';
 import '../utils/navigation_utils.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -225,6 +226,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ShippingAddressScreen()),
+                  ),
+                ),
+                _buildProfileItem(
+                  context,
+                  Icons.pets,
+                  'Pet Age Calculator',
+                  showArrow: true,
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => PetAgeCalculatorScreen()),
                   ),
                 ),
                 SizedBox(height: 20),

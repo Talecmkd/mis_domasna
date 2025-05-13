@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import '../services/location_service.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../widgets/custom_loading_indicator.dart';
 
 class MapScreen extends StatefulWidget {
   @override
@@ -277,13 +278,8 @@ class _MapScreenState extends State<MapScreen> {
   Widget _buildBody() {
     if (_isLoading) {
       return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(color: Color(0xFF1AE51A)),
-            SizedBox(height: 16),
-            Text('Getting your location...'),
-          ],
+        child: CustomLoadingIndicator(
+          message: 'Getting your location...',
         ),
       );
     }

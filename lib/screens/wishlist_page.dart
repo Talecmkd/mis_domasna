@@ -6,8 +6,10 @@ import '../models/cart.dart';
 import '../providers/store_provider.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/bottom_nav_bar.dart';
+import '../widgets/custom_alert_dialog.dart';
 import 'product_detail_page.dart';
 import '../utils/navigation_utils.dart';
+
 
 class WishlistPage extends StatelessWidget {
   @override
@@ -135,21 +137,14 @@ class WishlistPage extends StatelessWidget {
         child: Icon(Icons.delete, color: theme.colorScheme.error),
       ),
       confirmDismiss: (direction) {
-        return showDialog(
+        return showDialog<bool>(
           context: context,
-          builder: (ctx) => AlertDialog(
-            title: Text('Remove from Wishlist'),
-            content: Text('Do you want to remove this item from your wishlist?'),
-            actions: [
-              TextButton(
-                child: Text('No'),
-                onPressed: () => Navigator.of(ctx).pop(false),
-              ),
-              TextButton(
-                child: Text('Yes'),
-                onPressed: () => Navigator.of(ctx).pop(true),
-              ),
-            ],
+          builder: (ctx) => CustomAlertDialog(
+            title: 'Remove from Wishlist',
+            message: 'Do you want to remove this item from your wishlist?',
+            type: DialogType.confirm,
+            onConfirm: () => Navigator.of(ctx).pop(true),
+            onCancel: () => Navigator.of(ctx).pop(false),
           ),
         );
       },

@@ -14,6 +14,7 @@ import '../widgets/popular_products_grid.dart';
 import 'cart_page.dart';
 import 'map_screen.dart';
 import '../utils/navigation_utils.dart';
+import '../widgets/custom_loading_indicator.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -45,8 +46,8 @@ class _HomePageState extends State<HomePage> {
 
     if (storeProvider.isLoading) {
       return Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
+        body: CustomLoadingIndicator(
+          message: 'Loading products and services...',
         ),
       );
     }

@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../models/cart.dart';
 import '../services/firestore_service.dart';
+import '../widgets/custom_alert_dialog.dart';
 import 'product_detail_page.dart';
 
 class CartPage extends StatelessWidget {
@@ -33,25 +34,16 @@ class CartPage extends StatelessWidget {
               final cart = Provider.of<Cart>(context, listen: false);
               showDialog(
                 context: context,
-                builder: (ctx) => AlertDialog(
-                  title: Text('Clear Cart?'),
-                  content: Text('This will remove all items from your cart.'),
-                  actions: [
-                    TextButton(
-                      child: Text('Cancel'),
-                      onPressed: () => Navigator.of(ctx).pop(),
-                    ),
-                    TextButton(
-                      child: Text('Clear'),
-                      onPressed: () {
+                builder: (ctx) => CustomAlertDialog(
+                  title: 'Clear Cart?',
+                  message: 'This will remove all items from your cart.',
+                  type: DialogType.confirm,
+                  onConfirm: () {
                         cart.clear();
-                        Navigator.of(ctx).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Cart cleared')),
                         );
                       },
-                    ),
-                  ],
                 ),
               );
             },

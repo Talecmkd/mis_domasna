@@ -31,14 +31,33 @@ class StarRating extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: List.generate(maxRating, (index) {
         final value = index + 1;
+        final starFillPercentage = (currentRating - index).clamp(0.0, 1.0);
+
         return GestureDetector(
           onTap: isInteractive
               ? () => onRatingChanged?.call(value.toDouble())
               : null,
-          child: Icon(
-            value <= currentRating ? Icons.star_rounded : Icons.star_outline_rounded,
-            size: size,
-            color: value <= currentRating ? activeStarColor : inactiveStarColor,
+          child: Stack(
+            children: [
+              // Empty star (background)
+              Icon(
+                Icons.star_rounded,
+                size: size,
+                color: inactiveStarColor,
+              ),
+              // Filled star (foreground)
+              ClipRect(
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: starFillPercentage,
+                  child: Icon(
+                    Icons.star_rounded,
+                    size: size,
+                    color: activeStarColor,
+                  ),
+                ),
+              ),
+            ],
           ),
         );
       }),

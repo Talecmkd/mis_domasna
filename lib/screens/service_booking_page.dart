@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../models/pet_service.dart';
+import '../widgets/custom_alert_dialog.dart';
 
 class ServiceBookingPage extends StatefulWidget {
   final PetService service;
@@ -281,21 +282,13 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                 ? () {
                     showDialog(
                       context: context,
-                      builder: (context) => AlertDialog(
-                        title: Text('Confirm Booking'),
-                        content: Text(
-                          'Would you like to confirm your booking for ${widget.service.name} on '
+                      builder: (ctx) => CustomAlertDialog(
+                        title: 'Confirm Booking',
+                        message: 'Would you like to confirm your booking for ${widget.service.name} on '
                           '${DateFormat('EEEE, MMMM d').format(selectedDate!)} at '
                           '${selectedTime!.format(context)}?',
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
+                        type: DialogType.confirm,
+                        onConfirm: () {
                               Navigator.pop(context);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -304,9 +297,6 @@ class _ServiceBookingPageState extends State<ServiceBookingPage> {
                                 ),
                               );
                             },
-                            child: Text('Confirm'),
-                          ),
-                        ],
                       ),
                     );
                   }

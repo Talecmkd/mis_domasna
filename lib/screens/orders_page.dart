@@ -9,6 +9,7 @@ import '../widgets/bottom_nav_bar.dart';
 import 'cart_page.dart';
 import 'order_details_page.dart';
 import '../utils/navigation_utils.dart';
+import '../widgets/custom_loading_indicator.dart';
 
 class OrdersPage extends StatefulWidget {
   @override
@@ -184,21 +185,8 @@ class _OrdersPageState extends State<OrdersPage> {
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'Loading orders...',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 16,
-                            color: theme.colorScheme.onSurface.withOpacity(0.6),
-                          ),
-                        ),
-                      ],
+                    child: CustomLoadingIndicator(
+                      message: 'Loading orders...',
                     ),
                   );
                 }

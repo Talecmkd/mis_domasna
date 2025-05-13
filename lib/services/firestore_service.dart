@@ -396,4 +396,34 @@ class FirestoreService {
         .doc(_getCurrentUserId())
         .update(data);
   }
+
+  // Update product rating
+  Future<void> updateProductRating(String productId, double newRating) async {
+    try {
+      final userId = _getCurrentUserId();
+      print('Updating rating for product $productId by user $userId...');
+      
+      // Get the current product data
+      final productDoc = await _productsCollection.doc(productId).get();
+      if (!productDoc.exists) {
+        throw Exception('Product not found');
+      }
+
+      final productData = productDoc.data()!;
+      Map<String, dynamic> currentRatings = Map<String, dynamic>.from(productData['userRatings'] ?? {});
+      
+      // Add or update the rating
+      currentRatings[userId] = newRating;
+
+      // Update the product document
+      await _productsCollection.doc(productId).update({
+        'userRatings': currentRatings,
+      });
+
+      print('Successfully updated product rating for user $userId');
+    } catch (e) {
+      print('Error updating product rating: $e');
+      throw Exception('Failed to update product rating: $e');
+    }
+  }
 } 
